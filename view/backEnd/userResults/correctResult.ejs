@@ -1,0 +1,170 @@
+<%- include("../include/head")  %> 
+<link rel="stylesheet" href="/frontEnd/assets/css/style.css">
+    <link
+      rel="stylesheet"
+      href="/frontEnd/assets/plugins/select2/css/select2.min.css"
+    />
+
+    <!-- Bootstrap CSS -->
+    <link
+      rel="stylesheet"
+      href="/frontEnd/assets/plugins/bootstrap-tagsinput/css/bootstrap-tagsinput.css"
+    />
+
+    <link
+      rel="stylesheet"
+      href="/frontEnd/assets/plugins/dropzone/dropzone.min.css"
+    />
+    <!-- Main CSS -->
+		<link href="/backEnd/assets/Tagging-System-Autocomplete-Amsify-Suggestags/css/amsify.suggestags.css" rel="stylesheet">
+	<style>
+		.amsify-suggestags-area .amsify-suggestags-input-area {
+			min-height: 250px !important;
+		}
+		body {
+			background-color: #f8f9fa;
+		}
+		.change-photo-btn {
+			background: #19C1DC;
+			width:200px;
+			border-radius: 25px;
+			height:40px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			position: relative;
+		}
+		.change-photo-btn input {
+			position: absolute;
+			top:50%;
+			left:50%;
+			transform: translate(-50% , -50%);
+			width:100%;
+			height:100%;
+			opacity: 0;
+		}
+		.pairant {
+			width:100%;
+			box-shadow: 10px 10px 15px rgba(0,0,0,0.1);
+			padding:10px;
+			margin-bottom:20px;
+			border:1px solid #ddd
+		}
+		.pairant .headering {
+			background:#eee;
+			padding:10px;
+			text-align: center;
+			font-size:15px;
+			margin-bottom:20px
+		}
+		.pairant .headering h4 {
+			background:#fff;
+			margin:0;
+			padding:5px
+		}
+		.pairant audio {
+			width:100%
+		}
+	</style>
+<%- include("../include/aside")  %> 
+<%- include("../include/navePare")  %> 
+<%- include("../include/alert")  %> 
+</head>
+    </body>
+        <!-- Main Wrapper -->
+        <div class="main-wrapper">
+            <!-- Page Wrapper -->
+            <div class="page-wrapper">
+                <div class="content container-fluid">
+                    <!-- Page Header -->
+                    <div class="page-header">
+                        <div class="row">
+                            <div class="col-sm-7 col-auto">
+                                <h3 class="page-title">اجابه المستخدم </h3>
+                                <ul class="breadcrumb">
+                                    <li class="breadcrumb-item"><a href="index.html">لوحه التحكم</a></li>
+                                    <li class="breadcrumb-item active">تصحيح الاجابه </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <%- include("../include/notification")  %> 
+                    </div>
+                    <!-- /Page Header -->
+                    <div class="row">
+			            <div class="col-md-12">
+							<form>
+								<!-- Basic Information -->
+								<div class="card">
+									<div class="card-body">
+										<h4 class="card-title">معلومات بسيطه</h4>
+										<div class="row form-row">
+											<div class="col-md-12">
+												<div class="form-group">
+													<label>صوره المستخدم <span class="text-danger">*</span></label>
+													<br>
+													<img style="width:150px;height:150px" src="/backEnd/assets/img/users/<%= UserResult.ResultUser.image ? UserResult.ResultUser.image.split("--")[0] : "avatar.png" %>">
+												</div>
+											</div>
+											<div class="col-md-12">
+												<div class="form-group">
+													<label>اسم المستخدم <span class="text-danger"></span></label>
+													<input name="name" value="<%= UserResult.ResultUser.name %>" type="disability" class="form-control">
+												</div>
+											</div>
+											<div class="col-md-12">
+												<div class="form-group">
+													<label>اسم الاعاقه <span class="text-danger"></span></label>
+													<textarea name="disability" type="disability" class="form-control"><%= UserResult.ResultTesting.TestingDisability.name %></textarea>
+												</div>
+											</div>
+											
+											<label>الكلمات المراد نطقها <span class="text-danger"></span></label>
+											<% UserResult.ResultTesting.exam.forEach((element , i) => { %>
+												<div class="col-md-12">
+													<div class="pairant">
+														<div class="headering">
+															<h4><%= element%></h4>
+														</div>
+														<div class="body">
+															<audio controls src="/backEnd/assets/img/users/audio/<%= UserResult.audio.split("--")[i] %>"></audio>
+														</div>
+													</div>
+												</div>
+											<% }) %>
+											
+
+										</div>
+									</div>
+								</div>
+								<!-- /Basic Information -->
+
+								<div class="submit-section submit-btn-bottom">
+									<a href="/dashboard/resultOfExam/<%= UserResult.id %>?result=success" style="margin-bottom:30px" class="btn btn-primary ">ناجح </a>
+									<a href="/dashboard/resultOfExam/<%= UserResult.id %>?result=faild" style="margin-bottom:30px" class="btn btn-danger ">غير ناجح</a>
+								</div>
+							</form>
+						</div>
+                    </div>
+                </div>			
+            </div>
+            <!-- /Page Wrapper -->
+
+
+        <%- include("../include/footer_script")  %> 
+        		
+        <script src="/backEnd/assets/Tagging-System-Autocomplete-Amsify-Suggestags/js/jquery.amsify.suggestags.js"></script>
+		<script>
+			$('input[id="tags"]').amsifySuggestags({
+
+		type : 'amsify',
+		suggestions: ['Black', 'White', 'Red', 'Blue', 'Green', 'Orange']
+
+		});
+		</script>
+		<script src="/backEnd/assets/plugins/datatables/jquery.dataTables.min.js"></script>
+		<script src="/backEnd/assets/plugins/datatables/datatables.min.js"></script>
+
+        <script src="/backEnd/assets/js/script.js"></script>
+
+    </head>
+</body>

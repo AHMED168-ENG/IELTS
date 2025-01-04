@@ -1,0 +1,91 @@
+<%- include("../include/head.ejs") %> <%- include("../include/navebar.ejs") %>
+<%- include("../include/notification.ejs") %>
+
+<style>
+  .training header {
+    text-align: center;
+  }
+  .training h1 {
+    font-size: 29px;
+    position: relative;
+    display: inline-block;
+    text-align: center;
+    padding-bottom: 10px;
+  }
+  .training h1::after {
+    content: "";
+    width: 40%;
+    bottom: 0;
+    position: absolute;
+    height: 2px;
+    background: #1610BB;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  .training .row > div .box {
+    border: 1px solid #ccc;
+    box-shadow: 10px 10px 15px rgba(0, 0, 0, 0.1);
+  }
+
+   .paginate {
+     margin-top:40px
+   }
+  .paginate ul {
+    justify-content: center;
+    align-items: center;
+  }
+  .paginate ul li a {
+    margin:0 4px;
+    width:35px;
+    height:35px;
+    display: flex;
+    background:#ccc;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+    color:#0056B3
+  }
+  .paginate ul li a.active {
+    background:#0056B3;
+  }
+  .paginate ul li a.active {
+    color:white
+  }
+
+</style>
+<div class="training">
+  <div class="container">
+    <header>
+      <h1 class="text-center">بعض التدريبات الخاصه بمشكلات طفلك</h1>
+    </header>
+    <div class="row">
+      <% MyTraining.rows.forEach(element => { %>
+      <div class="col-sm-12 col-md-6 col-lg-3">
+        <div class="box">
+          <div class="image">
+            <img src="/backEnd/assets/img/trainingImage/<%=
+            element.image.split("--")[0] %>" alt="" />
+          </div>
+          <div class="text">
+            <p><%= element.title %></p>
+            <span>الاضطراب : <span <%=  element.isOther ? "style=color:red" : "" %>><%= element.isOther ? " هذا الكتاب مشترك مبين اكثر من اعاقه " :  element.trainingDisability.name %></span></span>
+          </div>
+             
+          <a class="btn btn-md btn-success" href="/showTraining/<%= element.id %>">الحق التدريب</a>
+        </div>
+      </div>
+      <% }) %>
+    </div>
+    <div class="paginate">
+        <ul class="list-unstyled d-flex">
+            <% pages.forEach(element => { %>
+                <li><a class="<%= page == element.number ? "active" : "" %>" href="<%= element.url %>"><%= element.number %></a></li>
+            <% }) %>
+        </ul>
+    </div>
+  </div>
+</div>
+
+<%- include("../include/footer.ejs") %> <%-
+include("../include/footerScript.ejs") %>
+<script src="/frontEnd/assets/js/main.js"></script>

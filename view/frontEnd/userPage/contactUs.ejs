@@ -1,0 +1,24 @@
+<%- include("../include/head.ejs") %> <%- include("../include/navebar.ejs") %>
+<%- include("../include/notification.ejs") %>
+
+<div class="contact">
+  <div class="container col-md-6">
+    <h1 class="text-center">Contact Us</h1>
+    <form method="post">
+      <div class="form-group">
+        <textarea
+          required
+          name="message"
+          class="form-control"
+          placeholder="رسالتك"
+        ></textarea>
+      </div>
+      <div class="btn-p">
+        <button class="btn btn-1">Send</button>
+      </div>
+    </form>
+  </div>
+</div>
+<%- include("../include/footer.ejs") %> <%-
+include("../include/footerScript.ejs") %>
+<script src="/frontEnd/assets/js/main.js"></script>

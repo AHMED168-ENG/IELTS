@@ -1,0 +1,99 @@
+<%- include("../include/head")  %>
+<%- include("../include/aside")  %>
+<%- include("../include/navePare")  %>
+<%- include("../include/alert")  %>
+</head>
+</body>
+<!-- Main Wrapper -->
+<div class="main-wrapper">
+	<!-- Page Wrapper -->
+	<div class="page-wrapper">
+		<div class="content container-fluid">
+			<!-- Page Header -->
+			<div class="page-header">
+				<div class="row">
+					<div class="col-sm-7 col-auto">
+						<h3 class="page-title">All Users</h3>
+						<ul class="breadcrumb">
+							<li class="breadcrumb-item"><a href="index.html">Control Panel</a></li>
+							<li class="breadcrumb-item active">Users</li>
+						</ul>
+					</div>
+				</div>
+				<%- include("../include/notification")  %>
+			</div>
+			<!-- /Page Header -->
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="card">
+						<div class="card-body">
+							<div class="table-responsive">
+								<table class="datatable table table-hover table-center mb-0">
+									<thead>
+										<tr>
+											<th>Name</th>
+											<th>Email</th>
+											<th>Age</th>
+											<!-- <th>الاعاقه</th> -->
+											<th>Gender</th>
+											<th>Control</th>
+
+										</tr>
+									</thead>
+									
+									<tbody>
+										<% users.forEach(element => { %>
+										<tr>
+											<td>
+												<h2 class="table-avatar">
+													<a style="margin-left:10px" href="profile.html"
+														class="avatar avatar-sm mr-2"><img
+															class="avatar-img rounded-circle"
+															src="/backEnd/assets/img/users/<%= element.image ? element.image.split("--")[0] : "avatar.png" %>"
+															alt="User Image"></a>
+													<a href="profile.html"><%= element.name %></a>
+												</h2>
+											</td>
+											<td><%= element.email %></td>
+											<td><%= element.age %> Year</td>
+											<!-- <td><%= element.age %></td> -->
+
+											<td><%= element.gender ? "man" : "women" %> </td>
+
+											<td>
+												<a href="/dashboard/activeUser/<%= element.id %>?isActive=<%= element.active %>"
+													class="btn btn-primary"><%= !element.active ? "dis active" : "active" %></a>
+												<a href="/dashboard/EditUsers/<%= element.id %>"
+													class="btn btn-success">تعدبل</a>
+												<form class="d-inline" method="post"
+													action="dashboard/deleteUser/<%= element.id %>">
+													<input type="hidden" name="oldImage" id=""
+														value="<%= element.image %>">
+													<button class="btn btn-danger">delete</button>
+												</form>
+
+											</td>
+										</tr>
+										<% }) %>
+
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- /Page Wrapper -->
+
+
+	<%- include("../include/footer_script")  %>
+
+	<!-- Datatables JS -->
+	<script src="/backEnd/assets/plugins/datatables/jquery.dataTables.min.js"></script>
+	<script src="/backEnd/assets/plugins/datatables/datatables.min.js"></script>
+	<script src="/backEnd/assets/js/script.js"></script>
+
+	</head>
+	</body>

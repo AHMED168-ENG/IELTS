@@ -1,0 +1,705 @@
+<%- include("../include/head") %>
+	<link rel="stylesheet" href="/frontEnd/assets/css/style.css">
+	<link rel="stylesheet" href="/frontEnd/assets/plugins/select2/css/select2.min.css" />
+
+	<!-- Bootstrap CSS -->
+	<link rel="stylesheet" href="/frontEnd/assets/plugins/bootstrap-tagsinput/css/bootstrap-tagsinput.css" />
+
+	<link rel="stylesheet" href="/frontEnd/assets/plugins/dropzone/dropzone.min.css" />
+	<link href="/backEnd/assets/Tagging-System-Autocomplete-Amsify-Suggestags/css/amsify.suggestags.css"
+		rel="stylesheet">
+	<!-- Main CSS -->
+	<style>
+		body {
+			background-color: #f8f9fa;
+		}
+
+		.audio-controls {
+			display: flex;
+			align-items: center;
+			justify-content: right;
+			column-gap: 5px;
+			background-color: #999;
+			padding: 5px;
+		}
+
+		.btn-success {
+			background-color: #2F8D89;
+			border: #2F8D89;
+
+		}
+
+		.btn-success:hover {
+			background-color: #2F8D89;
+		}
+
+		.question_text {
+			width: 100%;
+			background-color: #2F8D89;
+			padding: 15px;
+			color: white;
+			border-radius: 5px;
+		}
+
+		.change-photo-btn {
+			background: #2F8D89;
+			width: 200px;
+			border-radius: 25px;
+			height: 40px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			position: relative;
+		}
+
+		.change-photo-btn input {
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			width: 100%;
+			height: 100%;
+			opacity: 0;
+		}
+
+		.form-group {
+			padding: 10px;
+			margin: 10px 0;
+			background-color: #eee;
+		}
+
+		audio {
+			height: 42px;
+		}
+
+		.card-title,
+		.nav-link {
+			text-transform: capitalize;
+		}
+
+		.choice-number {
+			padding: 7px;
+			background-color: #666;
+			color: white;
+			margin-left: 10px;
+		}
+
+		.remove-choice-btn {
+			margin: 0 !important;
+			margin-right: 10px !important;
+			height: 100%;
+		}
+
+		.add-choice-btn {
+			width: 100%;
+		}
+	</style>
+	<%- include("../include/aside") %>
+		<%- include("../include/navePare") %>
+			<%- include("../include/alert") %>
+				</head>
+				</body>
+
+				<div class="main-wrapper">
+					<!-- Page Wrapper -->
+					<div class="page-wrapper">
+						<div class="content container-fluid">
+							<!-- Page Header -->
+							<div class="page-header">
+								<div class="row">
+									<div class="col-sm-7 col-auto">
+										<h3 class="page-title">Exams</h3>
+										<ul class="breadcrumb">
+											<li class="breadcrumb-item"><a href="index.html">Control Panel</a></li>
+											<li class="breadcrumb-item active">Add Exam</li>
+										</ul>
+									</div>
+								</div>
+								<%- include("../include/notification") %>
+							</div>
+							<!-- /Page Header -->
+
+							<div class="row">
+								<div class="col-md-12">
+									<form method="post" enctype="application/x-www-form-urlencoded" id="examForm">
+										<!-- Tabs Section -->
+										<ul class="nav nav-tabs">
+											<li class="nav-item">
+												<a class="nav-link active" data-toggle="tab" href="#exam-info-tab">Exam
+													Data</a>
+											</li>
+											<li class="nav-item">
+												<a class="nav-link" data-toggle="tab"
+													href="#questions-tab">Questions</a>
+											</li>
+										</ul>
+
+										<div class="tab-content">
+											<!-- Exam Info Tab -->
+											<div id="exam-info-tab" class="tab-pane active">
+												<div class="card mt-3">
+													<div class="card mt-3">
+														<div class="card-body">
+															<h4 class="card-title">Basic information</h4>
+															<div class="row form-row">
+																<div class="col-md-12">
+																	<div class="form-group">
+																		<label>Exam Name<span
+																				class="text-danger">*</span></label>
+																		<input type="text" name="examName" id="examName"
+																			class="form-control" required>
+																		<div class="error-message text-danger"></div>
+																	</div>
+																</div>
+
+																<div class="col-md-12">
+																	<div class="form-group">
+																		<label>Exam Type <span
+																				class="text-danger">*</span></label>
+																		<select class="form-control" name="examType"
+																			id="examType" required>
+																			<option value="academic">Academic</option>
+																			<option value="general training">General
+																				Training</option>
+																		</select>
+																		<div class="error-message text-danger"></div>
+																	</div>
+																</div>
+
+																<!-- Toggle Shuffle Button -->
+																<div class="col-md-12">
+																	<div class="form-group">
+																		<label>Random Order</label>
+																		<div>
+																			<button type="button" id="shuffleToggle"
+																				class="btn btn-primary">
+																				<span id="shuffleLabel">Activated</span>
+																			</button>
+																			<input type="hidden" name="shuffle"
+																				id="shuffleInput" value="true">
+																		</div>
+																	</div>
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+
+											</div>
+											<!-- /Exam Info Tab -->
+
+											<!-- Questions Tab -->
+											<div id="questions-tab" class="tab-pane">
+												<ul class="nav nav-tabs" id="sections-tabs">
+													<!-- Dynamic Section Tabs Will Be Appended Here -->
+												</ul>
+
+												<div class="tab-content" id="sections-content">
+													<!-- Dynamic Section Content Will Be Appended Here -->
+												</div>
+											</div>
+										</div>
+
+										<div class="submit-section submit-btn-bottom">
+											<button type="button" id="submitExam"
+												class="btn btn-primary submit-btn">save
+												Changes</button>
+										</div>
+									</form>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- /Page Wrapper -->
+				</div>
+				<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+				<script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
+				<script>
+					document.addEventListener("DOMContentLoaded", () => {
+						const shuffleToggle = document.getElementById("shuffleToggle");
+						const shuffleLabel = document.getElementById("shuffleLabel");
+						const shuffleInput = document.getElementById("shuffleInput");
+
+						// Initial state
+						let isShuffleEnabled = true;
+
+						shuffleToggle.addEventListener("click", () => {
+							isShuffleEnabled = !isShuffleEnabled;
+							shuffleInput.value = isShuffleEnabled ? "true" : "false";
+							shuffleLabel.textContent = !isShuffleEnabled ? "Disabled" : "Activated";
+							shuffleToggle.classList.toggle("btn-primary", isShuffleEnabled);
+							shuffleToggle.classList.toggle("btn-danger", !isShuffleEnabled);
+						});
+					});
+				</script>
+
+				<script>
+
+					const sections = JSON.parse('<%- JSON.stringify(sections) %>');
+
+					const sectionsTabs = document.getElementById('sections-tabs');
+					const sectionsContent = document.getElementById('sections-content');
+					const editors = {}; // لتخزين CKEditor الخاص بكل سؤال
+					const audioFiles = {}; // لتخزين الملفات الصوتية
+					const fileUploads = {}; // لتخزين الملفات المرفوعة
+					let questionCounts = {};
+
+					function showNotification({ type, title, text = '', html = '', timer = 5000, position = 'top-end' }) {
+						Swal.fire({
+							toast: true,
+							position,
+							icon: type,
+							title,
+							text,
+							html,
+							showConfirmButton: false,
+							timer,
+						});
+					}
+
+
+					// Generate Tabs and Content for Each Section
+					sections.forEach((section, index) => {
+						const tab = document.createElement('li');
+						tab.className = 'nav-item';
+						tab.innerHTML = `<a class="nav-link ${index === 0 ? 'active' : ''}" data-toggle="tab" href="#section-${section._id}">${section.section}</a>`;
+						sectionsTabs.appendChild(tab);
+
+						const content = document.createElement('div');
+						content.className = `tab-pane ${index === 0 ? 'active' : ''}`;
+						content.id = `section-${section._id}`;
+						content.innerHTML = `
+							<div class="card mt-3">
+								<div class="card-body">
+									<h4 class="card-title">${section.section}</h4>
+									<div id="questions-container-${section._id}" class="questions-container">
+										<!-- Questions for this section will be added here -->
+									</div>
+									<button type="button" class="btn btn-primary add-question-btn" data-section-id="${section._id}">Add A Question</button>
+								</div>
+							</div>
+						`;
+						sectionsContent.appendChild(content);
+
+						questionCounts[section._id] = 0;
+					});
+
+					document.addEventListener('click', (event) => {
+						if (event.target.classList.contains('add-question-btn')) {
+							const sectionId = event.target.getAttribute('data-section-id');
+							addQuestion(sectionId);
+						}
+					});
+
+					const addQuestion = (sectionId) => {
+						questionCounts[sectionId]++;
+						const questionIndex = questionCounts[sectionId];
+						const questionsContainer = document.getElementById(`questions-container-${sectionId}`);
+
+						const questionTemplate = `
+							<div class="question-block card mt-3">
+								<div class="card-body">
+									<h5 class="question_text">Question ${questionIndex}</h5>
+									<div class="form-group question-text-container">
+										<label>Question Text <span class="text-danger">*</span></label>
+										<textarea name="questions[${sectionId}][${questionIndex}][questionText]" id="question-editor-${sectionId}-${questionIndex}" class="form-control question-text"></textarea>
+									</div>
+									<div class="form-group ">
+										<label>Question Degree <span class="text-danger">*</span></label>
+										<input name="questions[${sectionId}][${questionIndex}][degree]" type="number" class="form-control question-degree"></input>
+									</div>
+									<div class="form-group">
+										<label>Question Type <span class="text-danger">*</span></label>
+										<select name="questions[${sectionId}][${questionIndex}][type]" class="form-control question-type" data-section-id="${sectionId}" data-index="${questionIndex}">
+											<option value=""></option>
+											<option value="multipleChoice">Multiple Choice</option>
+											<option value="trueFalse">True Or False </option>
+											<option value="fillInTheBlank">Fill In The Blank</option>
+											<option value="audio">Voice</option>
+											<option value="file">File</option>
+										</select>
+									</div>
+									<div class="additional-fields" data-section-id="${sectionId}" data-index="${questionIndex}"></div>
+									<button type="button" class="btn btn-danger remove-question-btn">Delete Question</button>
+								</div>
+							</div>
+						`;
+
+						questionsContainer.insertAdjacentHTML('beforeend', questionTemplate);
+						ClassicEditor.create(document.querySelector(`#question-editor-${sectionId}-${questionIndex}`))
+							.then(editor => {
+								editors[`question-editor-${sectionId}-${questionIndex}`] = editor;
+							})
+							.catch(error => {
+								console.error(error);
+							});
+						attachEventListeners();
+					};
+
+					const attachEventListeners = () => {
+						document.querySelectorAll('.remove-question-btn').forEach((btn) => {
+							btn.addEventListener('click', (e) => {
+								e.target.closest('.question-block').remove();
+							});
+						});
+
+						document.querySelectorAll('.question-type').forEach((select) => {
+							select.addEventListener('change', (e) => {
+								const type = e.target.value;
+								const sectionId = e.target.dataset.sectionId;
+								const index = e.target.dataset.index;
+								const additionalFields = document.querySelector(`.additional-fields[data-section-id="${sectionId}"][data-index="${index}"]`);
+								additionalFields.innerHTML = '';
+
+								if (type === 'multipleChoice') {
+									additionalFields.innerHTML = `
+											<div class="form-group">
+												<label>Options <span class="text-danger">*</span></label>
+												<div id="choices-container-${sectionId}-${index}">
+													<div class="choice-wrapper d-flex align-items-center mb-2">
+														<span class="choice-number mr-2">1.</span>
+														<input type="text" name="questions[${sectionId}][${index}][choices][]" class="form-control" placeholder="First Option" required>
+													</div>
+													<div class="choice-wrapper d-flex align-items-center mb-2">
+														<span class="choice-number mr-2">2.</span>
+														<input type="text" name="questions[${sectionId}][${index}][choices][]" class="form-control" placeholder="Second Option" required>
+													</div>
+												</div>
+												<button type="button" class="btn btn-success btn-sm add-choice-btn" data-section-id="${sectionId}" data-index="${index}">Add Option</button>
+											</div>
+											<div class="form-group">
+												<label>The Right Answer <span class="text-danger">*</span></label>
+												<select name="questions[${sectionId}][${index}][correctAnswer]" class="form-control" required></select>
+											</div>
+										`;
+									attachChoiceEvent(sectionId, index);
+								}
+								else if (type === 'trueFalse') {
+									additionalFields.innerHTML = `
+										<div class="form-group">
+											<label>The Right Answer<span class="text-danger">*</span></label>
+											<select name="questions[${sectionId}][${index}][correctAnswer]" class="form-control" required>
+												<option value="true">Yes</option>
+												<option value="false">False</option>
+											</select>
+										</div>
+									`;
+								} else if (type === 'fillInTheBlank') {
+									additionalFields.innerHTML = `
+										<div class="form-group">
+											<label>Answer <span class="text-danger">*</span></label>
+											<input type="text" name="questions[${sectionId}][${index}][correctAnswer]" class="form-control" required>
+										</div>
+										
+									`;
+								} else if (type === 'audio') {
+									additionalFields.innerHTML = `
+										<div class="form-group">
+											<label>audio recording <span class="text-danger">*</span></label>
+											<div class="audio-controls">
+												<button type="button" class="btn btn-primary record-audio-btn" data-section-id="${sectionId}" data-index="${index}"><i class="fa fa-microphone"></i> تسجيل</button>
+												<span class="recording-indicator text-danger d-none">Registering...</span>
+												<audio controls class="mt-2 d-none"></audio>
+											</div>
+										</div>
+										<div class="form-group">
+											<label>The Right Answer <span class="text-danger">*</span></label>
+											<input type="text" name="questions[${sectionId}][${index}][correctAnswer]" class="form-control" required>
+										</div>
+									`;
+									attachAudioListeners(sectionId, index);
+								} else if (type === 'file') {
+									additionalFields.innerHTML = `
+										<div class="form-group">
+											<label>Upload File <span class="text-danger">*</span></label>
+											<input type="file" name="questions[${sectionId}][${index}][file]" class="form-control file-upload" data-section-id="${sectionId}" data-index="${index}" required>
+										</div>
+										<div class="form-group">
+											<label>The Right Answer <span class="text-danger">*</span></label>
+											<input type="text" name="questions[${sectionId}][${index}][correctAnswer]" class="form-control" required>
+										</div>
+									`;
+									attachFileListeners(sectionId, index);
+								}
+							});
+						});
+					};
+
+					const attachChoiceEvent = (sectionId, index) => {
+						const addChoiceBtn = document.querySelector(`.add-choice-btn[data-section-id="${sectionId}"][data-index="${index}"]`);
+						const correctAnswerSelect = document.querySelector(`select[name="questions[${sectionId}][${index}][correctAnswer]"]`);
+
+						const updateCorrectAnswerOptions = () => {
+							const choicesContainer = document.getElementById(`choices-container-${sectionId}-${index}`);
+							const choices = choicesContainer.querySelectorAll('input[type="text"]');
+							correctAnswerSelect.innerHTML = ''; // Clear old options
+
+							choices.forEach((choice, i) => {
+								const option = document.createElement('option');
+								option.value = choice.value;
+								option.textContent = `${i + 1}. ${choice.value}`;
+								correctAnswerSelect.appendChild(option);
+							});
+						};
+
+						addChoiceBtn.addEventListener('click', () => {
+							const choicesContainer = document.getElementById(`choices-container-${sectionId}-${index}`);
+							const choiceTemplate = `
+						<div class="choice-wrapper d-flex align-items-center mb-2">
+							<span class="choice-number mr-2">${choicesContainer.children.length + 1}.</span>
+							<input type="text" name="questions[${sectionId}][${index}][choices][]" class="form-control" placeholder="Additional Option" required>
+							<button type="button" class="btn btn-danger btn-sm ml-2 remove-choice-btn">X</button>
+						</div>
+					`;
+							choicesContainer.insertAdjacentHTML('beforeend', choiceTemplate);
+							updateCorrectAnswerOptions();
+						});
+
+						const choicesContainer = document.getElementById(`choices-container-${sectionId}-${index}`);
+						choicesContainer.addEventListener('input', (e) => {
+							if (e.target.tagName === 'INPUT') {
+								updateCorrectAnswerOptions();
+							}
+						});
+
+						choicesContainer.addEventListener('click', (e) => {
+							if (e.target.classList.contains('remove-choice-btn')) {
+								const choiceWrapper = e.target.closest('.choice-wrapper');
+								choiceWrapper.remove();
+
+								// Update choice numbers
+								const allChoices = choicesContainer.querySelectorAll('.choice-wrapper');
+								allChoices.forEach((choice, i) => {
+									choice.querySelector('.choice-number').textContent = `${i + 1}.`;
+								});
+
+								updateCorrectAnswerOptions();
+							}
+						});
+
+						updateCorrectAnswerOptions();
+					};
+
+					const attachAudioListeners = (sectionId, index) => {
+						const recordBtn = document.querySelector(`.record-audio-btn[data-section-id="${sectionId}"][data-index="${index}"]`);
+						const parent = recordBtn.closest('.audio-controls');
+						const audioElement = parent.querySelector('audio');
+						const recordingIndicator = parent.querySelector('.recording-indicator');
+						let mediaRecorder;
+						let isRecording = false;
+						let chunks = [];
+
+						recordBtn.addEventListener('click', async () => {
+							if (!isRecording) {
+								const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+								mediaRecorder = new MediaRecorder(stream);
+
+								mediaRecorder.ondataavailable = (e) => {
+									chunks.push(e.data);
+								};
+
+								mediaRecorder.onstop = async () => {
+									const blob = new Blob(chunks, { type: 'audio/ogg; codecs=opus' });
+									audioElement.src = URL.createObjectURL(blob);
+									audioElement.classList.remove('d-none');
+									chunks = [];
+
+									const formData = new FormData();
+									formData.append('file', blob);
+
+									try {
+										const response = await fetch('http://localhost:5000/dashboard/upload-test-file', {
+											method: 'POST',
+											body: formData
+										});
+
+										if (!response.ok) {
+											throw new Error('Failed to upload file');
+										}
+
+										const data = await response.json();
+										audioFiles[`questions[${sectionId}][${index}][file]`] = data.fileName;
+										recordingIndicator.classList.add('d-none');
+										recordBtn.innerHTML = '<i class="fa fa-microphone"></i> تسجيل';
+									} catch (error) {
+										console.error('Upload failed:', error);
+										// alert('حدث خطأ أثناء رفع الملف. حاول مرة أخرى.');
+									}
+
+									recordingIndicator.classList.add('d-none');
+									recordBtn.innerHTML = '<i class="fa fa-microphone"></i> تسجيل';
+								};
+
+								mediaRecorder.start();
+								isRecording = true;
+								recordingIndicator.classList.remove('d-none');
+								recordBtn.innerHTML = '<i class="fa fa-stop"></i> إيقاف';
+							} else {
+								mediaRecorder.stop();
+								isRecording = false;
+							}
+						})
+					};
+
+					const attachFileListeners = (sectionId, index) => {
+						const fileInput = document.querySelector(`.file-upload[data-section-id="${sectionId}"][data-index="${index}"]`);
+
+						fileInput.addEventListener('change', async (event) => {
+							const file = event.target.files[0];
+							const allowedTypes = ['audio/mpeg', 'audio/wav', 'audio/ogg', 'audio/mp3'];
+
+							// التحقق من نوع وحجم الملف
+							if (file && file.size <= 4 * 1024 * 1024 && allowedTypes.includes(file.type)) {
+								const formData = new FormData();
+								formData.append('file', file);
+
+								try {
+									const response = await fetch('http://localhost:5000/dashboard/upload-test-file', {
+										method: 'POST',
+										body: formData
+									});
+
+									if (!response.ok) {
+										throw new Error('Failed to upload file');
+									}
+
+									const data = await response.json();
+									fileUploads[`questions[${sectionId}][${index}][file]`] = data.fileName;
+									alert('تم رفع الملف بنجاح!');
+								} catch (error) {
+									console.error('Upload failed:', error);
+									alert('An error occurred while uploading the file. Try again.');
+								}
+							} else {
+								if (!allowedTypes.includes(file.type)) {
+									alert('The specified file is not a valid audio file.');
+								} else if (file.size > 4 * 1024 * 1024) {
+									alert('The file exceeds the allowed size (4 MB).');
+								}
+							}
+						});
+					};
+
+					const submitButton = document.getElementById('submitExam');
+					submitButton.addEventListener('click', async () => {
+						const form = document.getElementById('examForm');
+						const formData = new FormData(form);
+
+						// Transform FormData into a structured JSON object
+						const payload = {};
+
+						// Update question text using CKEditor
+						Object.keys(editors).forEach(editorId => {
+							const editorContent = editors[editorId].getData();
+							const textarea = document.querySelector(`#${editorId}`);
+							if (textarea) formData.set(textarea?.name, editorContent);
+
+						});
+
+						// Add audio files to FormData
+						Object.keys(audioFiles).forEach(key => {
+							formData.set(key, audioFiles[key]);
+						});
+
+						// Add file uploads to FormData
+						Object.keys(fileUploads).forEach(key => {
+							formData.set(key, fileUploads[key]);
+						});
+
+						// Convert FormData to JSON
+						for (let [key, value] of formData.entries()) {
+							if (key.startsWith('questions')) {
+								const keys = key.split(/\[|\]/).filter(k => k);
+								const sectionId = keys[1];
+								const questionIndex = parseInt(keys[2], 10);
+								const field = keys[3];
+
+								if (!payload.questions) payload.questions = {};
+								if (!payload.questions[sectionId]) payload.questions[sectionId] = [];
+								if (!payload.questions[sectionId][questionIndex - 1]) payload.questions[sectionId][questionIndex - 1] = {};
+
+								if (field === 'choices') {
+									if (!Array.isArray(payload.questions[sectionId][questionIndex - 1][field])) {
+										payload.questions[sectionId][questionIndex - 1][field] = [];
+									}
+									payload.questions[sectionId][questionIndex - 1][field].push(value);
+								} else {
+									payload.questions[sectionId][questionIndex - 1][field] = value;
+								}
+							} else {
+								payload[key] = value;
+							}
+						}
+
+						try {
+
+							if (payload && payload.questions && Object.keys(payload.questions).length) {
+								Object.keys(payload.questions).forEach(sectionId => {
+									payload.questions[sectionId] = payload.questions[sectionId].filter(question => question !== null);
+								});
+							}
+
+							const response = await fetch('http://localhost:5000/dashboard/addTesting', {
+								method: 'POST',
+								headers: {
+									'Content-Type': 'application/json',
+								},
+								body: JSON.stringify(payload),
+							});
+
+							if (!response.ok) {
+								const errorData = await response.json();
+
+								if (errorData.errors && errorData.errors.length > 0) {
+									Swal.fire({
+										title: 'Validation error',
+										html: errorData.errors.map(err => `<p>${err}</p>`).join(''),
+										icon: 'error',
+										confirmButtonText: 'Good',
+									});
+								} else {
+									Swal.fire({
+										title: 'unexpected error',
+										text: 'An unexpected error occurred. Try again.',
+										icon: 'error',
+										confirmButtonText: 'Good',
+									});
+								}
+							} else {
+								Swal.fire({
+									title: 'Saved successfully',
+									text: 'The operation was successful!',
+									icon: 'success',
+									confirmButtonText: 'Good',
+								}).then(() => window.location.reload());
+
+
+							}
+						} catch (error) {
+							console.error('Network error:', error);
+							Swal.fire({
+								title: 'Network error',
+								text: 'An error occurred while connecting to the server. Please make sure you are connected to the network.',
+								icon: 'Arar',
+								confirmButtonText: 'Good',
+							});
+						}
+					})
+
+
+					attachEventListeners();
+				</script>
+
+
+
+
+
+
+
+				<%- include("../include/footer_script") %>
+					<script src="/backEnd/assets/plugins/datatables/jquery.dataTables.min.js"></script>
+					<script src="/backEnd/assets/plugins/datatables/datatables.min.js"></script>
+					<script src="/backEnd/assets/js/script.js"></script>
+
+					</head>
+					</body>

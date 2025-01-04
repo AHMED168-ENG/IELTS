@@ -1,0 +1,412 @@
+<%- include("../include/head.ejs") %>
+<%- include("../include/navebar.ejs") %>
+<%- include("../include/notification.ejs") %>
+
+<style>
+  .section-container {
+    display: none;
+  }
+  .section-container.active {
+    display: block;
+  }
+  .page-header {
+    padding: 20px 0;
+    width: 100%;
+  }
+  .timer {
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  .audio-control {
+    margin-bottom: 10px;
+  }
+  .question-block {
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      background-color: #f9f9f9;
+  }
+
+  .form-check {
+      margin-bottom: 10px;
+  }
+
+  #timer {
+      font-size: 1.2em;
+      font-weight: bold;
+  }
+
+  .audio-question, .file-question {
+      margin-top: 15px;
+  }
+
+  .question-block {
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+        margin-bottom: 20px;
+    }
+
+    .form-check {
+        margin-bottom: 10px;
+        background-color: #eee;
+    }
+
+    #timer {
+        font-size: 1.2em;
+        font-weight: bold;
+    }
+
+    .recording-controls {
+        margin-top: 15px;
+    }
+
+    .text-danger {
+        font-size: 0.9em;
+    }
+
+    .question-type {
+        font-weight: bold;
+        color: #007bff;
+        margin-bottom: 10px;
+    }
+    .questionText {
+      width:100%;
+      display: flex;
+      background-color: #666;
+      align-items: center;
+      color: white;
+      margin: 0;
+      margin-bottom: 10px;
+      padding: 10px 8px;
+    }
+    .questionText p {
+      margin: 0;
+    }
+</style>
+
+<div class="main-wrapper">
+  <!-- Page Wrapper -->
+  <div class="container">
+    <div class="page-wrapper">
+      <div class="content container-fluid">
+          <!-- Page Header -->
+          <div class="page-header">
+              <div class="row">
+                  <div class="col-sm-12 col-auto">
+                      <h3 class="page-title">Exam <span class="text-capitalize">( <%= examData.name %> )</span></h3>
+                      <ul class="breadcrumb">
+                          <li class="breadcrumb-item active">Take Exam</li>
+                      </ul>
+                  </div>
+              </div>
+          </div>
+          <!-- /Page Header -->
+
+          <div id="exam-container" class="row">
+              <div class="col-md-12">
+                  <div class="card">
+                      <div class="card-header">
+                          <h4 id="section-title" class=" text-capitalize">Section</h4>
+                          <span id="timer" class="badge badge-info float-right">Time Left: 00:00</span>
+                      </div>
+                      <div class="card-body">
+                          <form id="examForm">
+                              <div id="questions-container">
+                                  <!-- Questions will be dynamically loaded here -->
+                              </div>
+                          </form>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+  </div>
+  <!-- /Page Wrapper -->
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+  const sections = JSON.parse('<%- JSON.stringify(sections) %>'); // Sections data from backend
+  const examData = JSON.parse('<%- JSON.stringify(examData) %>'); // Exam data from backend
+
+  let currentSectionIndex = 0;
+  let timerInterval;
+  const playedAudios = new Set(); // Track played audio files
+
+  const startTimer = (duration, callback) => {
+      const timerDisplay = document.getElementById('timer');
+      let timeRemaining = duration * 60;
+
+      timerInterval = setInterval(() => {
+          const minutes = Math.floor(timeRemaining / 60);
+          const seconds = timeRemaining % 60;
+          timerDisplay.textContent = `Time Left: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+
+          if (--timeRemaining < 0) {
+              clearInterval(timerInterval);
+              callback();
+          }
+      }, 1000);
+  };
+
+  const loadSection = (index) => {
+      if (index >= sections.length) {
+          Swal.fire({
+              title: 'Exam Complete',
+              text: 'Your answers have been submitted!',
+              icon: 'success',
+              confirmButtonText: 'OK',
+          }).then(() => {
+              window.location.href = '/allTesting'; // Redirect after completion
+          });
+          return;
+      }
+
+      const section = sections[index];
+      document.getElementById('section-title').textContent = section.section;
+      const questionsContainer = document.getElementById('questions-container');
+      questionsContainer.innerHTML = '';
+
+      const sectionQuestions = examData.questions.filter(q => q.section === section._id);
+
+      sectionQuestions.forEach((question, i) => {
+          const questionElement = document.createElement('div');
+          questionElement.className = 'question-block mb-4';
+
+          questionElement.innerHTML = `
+              <div class="form-group">
+                  <div class="d-flex"> <h5 class="question-type" style="margin-right:10px">${getQuestionTypeLabel(question.type)} </h5> <span> ( ${question.degree} degree ) </span> </div>
+                  <label style="display:flex;" class="questionText"><span style="margin-right:10px"> ${i + 1} . </span> <span style="text-transform:capitalize"> ${question.questionText} </span></label>
+                  ${generateInputField(question , section._id)}
+              </div>
+          `;
+          questionsContainer.appendChild(questionElement);
+      });
+
+      startTimer(section.duration, () => {
+          submitSection(() => {
+              currentSectionIndex++;
+              loadSection(currentSectionIndex);
+          });
+      });
+  };
+
+  const getQuestionTypeLabel = (type) => {
+      switch (type) {
+          case 'multipleChoice':
+              return 'Multiple Choice';
+          case 'trueFalse':
+              return 'True or False';
+          case 'fillInTheBlank':
+              return 'Fill in the Blank';
+          case 'audio':
+              return 'Audio Question';
+          case 'file':
+              return 'File Question';
+          default:
+              return 'Unknown Type';
+      }
+  };
+
+  const generateInputField = (question , sectionId) => {
+      switch (question.type) {
+          case 'multipleChoice':
+              return question.choices
+                  .map(
+                      (choice, i) => `
+                          <div class="form-check">
+                              <input type="radio" name="${sectionId}.${question._id}" value="${choice}" class="form-check-input" id="choice-${question._id}-${i}">
+                              <label class="form-check-label" for="choice-${question._id}-${i}">${choice}</label>
+                          </div>`
+                  )
+                  .join('');
+          case 'trueFalse':
+              return `
+                  <select name="${sectionId}.${question._id}" class="form-control">
+                      <option value=""></option>
+                      <option value="true">True</option>
+                      <option value="false">False</option>
+                  </select>`;
+          case 'fillInTheBlank':
+              return `<input type="text" name="${sectionId}.${question._id}" class="form-control" required>`;
+          case 'audio':
+          case 'file':
+              return `
+                  <div class="recording-controls">
+                      <audio style="width:100%;margin-bottom : 10px" controls id="audio-${question._id}" src="http://localhost:5000/backEnd/assets/sound/question/${question.file}" onplay="handleAudioPlay('${question._id}')"></audio>
+                      <br />
+                      <input type="text" name="${sectionId}.${question._id}" class="form-control" required>
+                  </div>`;
+          default:
+              return '';
+      }
+  };
+
+  const collectAnswers = () => {
+    const form = document.getElementById('examForm'); 
+    const formData = new FormData(form);
+
+    const answers = {};
+
+    for (let [key, value] of formData.entries()) {
+        const match = key.match(/(.*?)\.(.*)/); 
+        if (match) {
+            const sectionId = match[1];
+            const questionId = match[2];
+
+            if (!answers[sectionId]) {
+                answers[sectionId] = [];
+            }
+
+            answers[sectionId].push({
+                [questionId]: value,
+            });
+        }
+    }
+
+    return answers;
+};
+
+
+
+  // <button type="button" class="btn btn-primary mt-2" onclick="startRecording('${question._id}')" id="record-btn-${question._id}">Start Recording</button>
+  // <div id="recording-indicator-${question._id}" class="text-danger d-none">Recording...</div>
+  // <audio controls id="recorded-audio-${question._id}" class="d-none mt-2"></audio>
+  // <input type="hidden" name="question-${question._id}" id="input-${question._id}" required>
+
+  const handleAudioPlay = (id) => {
+      const audioElement = document.getElementById(`audio-${id}`);
+      if (audioElement && !playedAudios.has(id)) {
+          playedAudios.add(id);
+          audioElement.onended = () => {
+              audioElement.controls = false; // Disable controls after the audio finishes
+          };
+      } else if (audioElement) {
+          audioElement.pause();
+          audioElement.currentTime = 0;
+          alert('You can only play this audio once.');
+      }
+  };
+
+  let mediaRecorder;
+  let chunks = [];
+
+  const startRecording = async (id) => {
+      const recordButton = document.getElementById(`record-btn-${id}`);
+      const recordingIndicator = document.getElementById(`recording-indicator-${id}`);
+      const recordedAudio = document.getElementById(`recorded-audio-${id}`);
+      const inputField = document.getElementById(`input-${id}`);
+
+      if (recordButton.textContent === 'Start Recording') {
+          if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+              alert('Recording not supported on this browser.');
+              return;
+          }
+
+          const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          mediaRecorder = new MediaRecorder(stream);
+
+          mediaRecorder.ondataavailable = (e) => {
+              chunks.push(e.data);
+          };
+
+          mediaRecorder.onstop = async () => {
+              const blob = new Blob(chunks, { type: 'audio/ogg; codecs=opus' });
+              recordedAudio.src = URL.createObjectURL(blob);
+              recordedAudio.classList.remove('d-none');
+
+              const formData = new FormData();
+              formData.append('file', blob);
+
+              try {
+                  const response = await fetch('http://localhost:5000/dashboard/upload-test-file', {
+                      method: 'POST',
+                      body: formData,
+                  });
+
+                  if (!response.ok) {
+                      throw new Error('Failed to upload audio.');
+                  }
+
+                  const data = await response.json();
+                  inputField.value = data.filePath;
+                  alert('Audio uploaded successfully.');
+              } catch (error) {
+                  alert('Error uploading audio. Please try again.');
+              }
+
+              chunks = [];
+              recordButton.textContent = 'Start Recording';
+              recordingIndicator.classList.add('d-none');
+          };
+
+          mediaRecorder.start();
+          recordButton.textContent = 'Stop Recording';
+          recordingIndicator.classList.remove('d-none');
+      } else {
+          mediaRecorder.stop();
+          recordButton.textContent = 'Start Recording';
+          recordingIndicator.classList.add('d-none');
+      }
+  };
+
+  const submitSection = async (callback) => {
+    clearInterval(timerInterval);
+    const form = document.getElementById('examForm');
+    const formData = new FormData(form);
+
+    const answers = collectAnswers();
+
+    try {
+        const response = await fetch(`/sendResult/${examData._id}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(answers), 
+        });
+        const data = await response.json();
+
+        if (!response.ok) {
+            Swal.fire({
+                title: 'Error',
+                text: 'Failed to submit section. Please try again.',
+                icon: 'error',
+                confirmButtonText: 'OK',
+            });
+            return;
+        }
+        console.log(response)
+        Swal.fire({
+            title: 'Section Submitted',
+            text: 'Your answers have been saved.',
+            html: `Your answers have been saved.<br><strong>Score:</strong> ${data.obtainedDegree} / ${data.totalDegree}`,
+            icon: 'success',
+            confirmButtonText: 'OK',
+        }).then(() => {
+            callback();
+        });
+    } catch (error) {
+        Swal.fire({
+            title: 'Network Error',
+            text: 'Could not connect to the server. Please try again later.',
+            icon: 'error',
+            confirmButtonText: 'OK',
+        });
+    }
+};
+
+
+  // Load the first section on page load
+  loadSection(currentSectionIndex);
+</script>
+
+
+<%- include("../include/footer.ejs") %>
+<%- include("../include/footerScript.ejs") %>

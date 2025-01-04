@@ -1,0 +1,176 @@
+<!-- <%- include("../include/head.ejs") %> <%- include("../include/navebar.ejs") %>
+<%- include("../include/notification.ejs") %>
+
+<style>
+  .box .row > div {
+    background-color: #eee;
+    margin-bottom: 20px;
+    padding: 10px;
+    border-radius: 15px;
+    border: 1px solid #ddd;
+    margin-left: 10px;
+  }
+  .box .row > div .left span {
+    position:relative
+  }
+  .box .row > div .left button {
+    position: absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    border:0;
+    background:white;
+    z-index: 3;
+    border-radius: 50%;
+  }
+  .box .row > div .left span::after , .box .row > div .left span::before {
+    content:"";
+    position: absolute;
+    width:100%;
+    height:100%;
+    border-radius: 50%;
+    background:#ccc;
+    top:0;
+    left:0;
+  }
+  .box .row > div .left span.active::before {
+    background:#ddd;
+        z-index: 1;
+    animation: anim 1.5s ease-in-out 1s infinite ;
+  }
+  
+  .box .row > div .left span.active::after {
+        z-index: 2;
+    animation: anim 1.5s ease-in-out 0s infinite ;
+  }
+  
+  @keyframes anim {
+      0% {
+        width:100%;
+        height:100%;
+        left:0%;
+        top:0%
+      }
+      100% {
+        width:140%;
+        height:140%;
+        left:-20%;
+        top:-20%      }
+  }
+</style>
+<link rel="stylesheet" href="/frontEnd/assets/css/select.css" />
+
+<div class="exams">
+  <div class="container">
+    <h1 class="text-center">الاختبارات</h1>
+    <div class="row">
+      <div class="col-md-12 mx-auto">
+        <div class="box">
+          <h2 style="text-align: center; margin-bottom: 70px">
+            الاختبار رقم ( <%= myExam.numberOfTest %> )
+          </h2>
+          <% myExam.exam.forEach(element => { %>
+          <div class="row justify-content-around">
+            <div class="col-md-5">
+              <div class="right">
+                <h3>
+                  المطلوب:<span class="s-1"></span>
+                    نطق كلمة <span class="s-2"><%= element %></span></span
+                  >
+                </h3>
+              </div>
+            </div>
+            <div class="col-md-5">
+              <div class="left">
+                <span class="d-inline-flex icon align-items-center justify-content-center">
+                  <button name="record">
+                    <i class="fas fa-microphone"></i>
+                  </button>
+                  <button class="d-none" name="stop">
+                    <i class="fas fa-microphone-slash"></i>
+                  </button>
+                  <audio src="" controls class="d-none"></audio>
+                  </span>
+                <h3>اضغط لبدا التسجيل</h3>
+              </div>
+            </div>
+          </div>
+          <% }) %>
+        </div>
+      </div>
+    </div>
+    <button style="margin:auto"  class="btn btn-success result d-block">ارسال الاجابه</button>
+
+  </div>
+</div>
+
+<%- include("../include/footer.ejs") %> <%-
+include("../include/footerScript.ejs") %>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.24.0/axios.min.js"></script>
+
+<script>
+    var btnStart = document.querySelectorAll('button[name="record"]');
+    btnStart.forEach(ele => {
+    ele.addEventListener('click', async () => {
+          ele.parentElement.classList.toggle("active")
+          var btnStop = ele.nextElementSibling;
+          var audio = btnStop.nextElementSibling;
+          btnStop.classList.toggle("d-none")
+          ele.classList.toggle("d-none")
+          let stream = await navigator.mediaDevices.getUserMedia({audio: true, video: false});
+          let mediaRecorder = new MediaRecorder(stream , {mimeType: 'audio/webm'});
+          mediaRecorder.start();
+          let chunks = [];
+          mediaRecorder.ondataavailable = (e)=>{
+                chunks.push(e.data);
+          }
+          //function to catch error
+          mediaRecorder.onerror = (e)=>{
+                alert(e.error);
+          }
+
+          mediaRecorder.onstop = (e)=>{
+            console.log(chunks)
+
+                let blod = new Blob(chunks , { type: "audio/ogg" });
+                //create url for audio
+                let url = URL.createObjectURL(blod);
+                //pass url into audio tag
+                audio.src = url;
+          }
+          btnStop.addEventListener('click',()=>{
+            btnStop.classList.toggle("d-none")
+            ele.classList.toggle("d-none")
+            ele.parentElement.classList.toggle("active")
+                mediaRecorder.stop();
+          })
+      })
+      })
+      
+    var result = document.querySelector(".result")
+    result.onclick = () => {
+    var data = new FormData()
+    var audios = document.querySelectorAll("audio")
+    
+    var file = new File([audios[0].getAttribute("src")], "audio.ogg" )
+    console.log(audios[0].getAttribute("src"))
+    console.log(file)
+
+    data.append("audio" , file)
+    
+       var file = new File([audios[0].getAttribute("src")], "audio.ogg" )
+
+    axios({
+      url : "/sendResult/<%= myExam.id %>",
+      method : "post",
+      data,
+      processData: false,
+      contentType: false,
+    }).then(result => {
+      console.log(result)
+    })
+
+    }
+</script> -->

@@ -1,0 +1,108 @@
+
+
+<%- include("./include/head")  %> 
+<%- include("./include/aside")  %> 
+<%- include("./include/navePare")  %> 
+</head>
+</body>
+<!-- Main Wrapper -->
+<div class="main-wrapper">z
+    <!-- Page Wrapper -->
+    <div class="page-wrapper">
+    <%- include("./include/notification")  %> 
+            <div class="content container-fluid">
+                <!-- Page Header -->
+                <div class="page-header">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <h3 class="page-title"> Hello admin! </h3>
+                            <ul class="breadcrumb">
+                                <li class="breadcrumb-item active">Control Panel</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <!-- /Page Header -->
+
+                <div class="row">
+                    <div class="col-xl-4 col-sm-6 col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="dash-widget-header">
+
+                                    <span class="dash-widget-icon text-primary border-primary">
+                                        <i class="fe fe-users"></i>
+                                    </span>
+
+                                    <div class="dash-count">
+                                        <h3><%= users.length %></h3>
+                                    </div>
+                                </div>
+                                <div class="dash-widget-info">
+                                    <h6 class="text-muted">Users</h6>
+                                    <div class="progress progress-sm">
+                                        <div class="progress-bar bg-primary w-50"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-4 col-sm-6 col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="dash-widget-header">
+                                    <span class="dash-widget-icon text-success">
+                                        <i class="fe fe-credit-card"></i>
+                                    </span>
+                                    <div class="dash-count">
+                                        <h3><%= training.length %></h3>
+                                    </div>
+                                </div>
+                                <div class="dash-widget-info">
+                                    
+                                    <h6 class="text-muted">Sections</h6>
+                                    <div class="progress progress-sm">
+                                        <div class="progress-bar bg-success w-50"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-4 col-sm-6 col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="dash-widget-header">
+                                    <span class="dash-widget-icon text-danger border-danger">
+                                        <i class="fe fe-money"></i>
+                                    </span>
+                                    <div class="dash-count">
+                                        <h3><%= Testing.length %></h3>
+                                    </div>
+                                </div>
+                                <div class="dash-widget-info">
+                                    
+                                    <h6 class="text-muted">Exams</h6>
+                                    <div class="progress progress-sm">
+                                        <div class="progress-bar bg-danger w-50"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>   
+                </div>			
+            </div>
+            <!-- /Page Wrapper -->
+        </div>
+<%- include("./include/footer")  %> 
+<%- include("./include/footer_script")  %> 
+<script src="/backEnd/assets/plugins/raphael/raphael.min.js"></script>    
+<script src="/backEnd/assets/plugins/morris/morris.min.js"></script>  
+<script src="/backEnd/assets/js/chart.morris.js"></script>
+<!-- Custom JS --> 
+<script  src="/backEnd/assets/js/script.js"></script>
+    </head>
+</body>
+
+    

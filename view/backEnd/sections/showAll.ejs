@@ -1,0 +1,110 @@
+<%- include("../include/head")  %> 
+<%- include("../include/aside")  %> 
+<%- include("../include/navePare")  %> 
+<%- include("../include/alert")  %> 
+<style>
+	.testPar {
+		width:250px;
+		overflow: hidden;
+		white-space:nowrap;
+	}
+</style>
+</head>
+    </body>
+        <!-- Main Wrapper -->
+        <div class="main-wrapper">
+            <!-- Page Wrapper -->
+            <div class="page-wrapper">
+                <div class="content container-fluid">
+                    <!-- Page Header -->
+                    <div class="page-header">
+                        <div class="row">
+                            <div class="col-sm-7 col-auto">
+                                <h3 class="page-title">All Sections</h3>
+                                <ul class="breadcrumb">
+                                    <li class="breadcrumb-item"><a href="index.html">Control Panel</a></li>
+                                    <li class="breadcrumb-item active">Sections</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <%- include("../include/notification")  %> 
+                    </div>
+                    <!-- /Page Header -->
+                    <div class="row">
+                        <div class="col-sm-12">
+							<div class="card">
+								<div class="card-body">
+									<div class="table-responsive">
+										<table class="datatable table table-hover table-center mb-0">
+											<thead>
+												<tr>
+													<th>Department Name</th>
+													<!-- <th>بدايه التاريخ</th> -->
+													<th>Duration</th>
+													<!-- <th>نهايه التاريخ</th> -->
+													<th>Control</th>
+												</tr>
+											</thead>
+											<tbody>
+												<% sections.forEach(element => { %>
+													<tr>
+														<td>
+															<h2 class="table-avatar">
+																<!-- <a style="margin-left:10px" class="avatar avatar-sm mr-2"></a> -->
+																<a ><p class="testPar"><%= element.section %></p></a>
+															</h2>
+														</td>
+														<!-- <td>
+															<h2 class="table-avatar">
+																<a style="margin-left:10px" class="avatar avatar-sm mr-2"></a>
+																<a ><p class="testPar"><%= new Date(element.startTime).toLocaleDateString() %></p></a>
+															</h2>
+														</td> -->
+														<td>
+															<h2 class="table-avatar">
+																<a style="margin-left:10px" class="avatar avatar-sm mr-2"></a>
+																<a ><p class="testPar"><%= element.duration %> minute</p></a>
+															</h2>
+														</td>
+														<!-- <td>
+															<h2 class="table-avatar">
+																<a style="margin-left:10px" class="avatar avatar-sm mr-2"></a>
+																<a ><p class="testPar"><%= new Date(element.endTime).toLocaleDateString() %></p></a>
+															</h2>
+														</td> -->
+												
+													
+														<td>
+															<!-- <a href="/dashboard/activeBook/<%= element.id %>?isActive=<%= element.active %>" class="btn btn-primary"><%= !element.active ? "غير مفعل" : "مفعل" %></a> -->
+															<a href="/dashboard/EditSection/<%= element.id %>" class="btn btn-success">Edit</a>
+															<form class="d-inline" method="post" action="/dashboard/deleteSection/<%= element.id %>">
+																<!-- <input type="hidden" name="oldImage" id="" value="<%= element.image %>"> -->
+																<!-- <input type="hidden" name="oldPdf" id="" value="<%= element.pdf %>"> -->
+																<button class="btn btn-danger">Delete</button>
+															</form>
+
+														</td>
+													</tr>
+												<% }) %>
+
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+						</div>	
+                    </div>
+                </div>			
+            </div>
+            <!-- /Page Wrapper -->
+
+
+        <%- include("../include/footer_script")  %> 
+        		
+		<!-- Datatables JS -->
+		<script src="/backEnd/assets/plugins/datatables/jquery.dataTables.min.js"></script>
+		<script src="/backEnd/assets/plugins/datatables/datatables.min.js"></script>
+        <script  src="/backEnd/assets/js/script.js"></script>
+
+    </head>
+</body>

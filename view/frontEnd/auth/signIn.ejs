@@ -1,0 +1,50 @@
+<%- include("../include/head.ejs") %> <%- include("../include/navebar.ejs") %>
+
+<style>
+  .login form {
+    box-shadow: none;
+    border: 1px solid #ccc;
+    background-color: #eee;
+  }
+  .login h3 {
+    color: #117a8b;
+    margin-bottom: 25px;
+  }
+</style>
+<%- include("../include/notification.ejs") %>
+
+<div class="login">
+  <div class="container">
+    <form class="col-md-7 mx-auto" method="post">
+      <h3 class="text-center">Join Us</h3>
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="text" name="email" class="form-control" />
+        <% if (validationError) { %> <% if (validationError.email) { %>
+        <span class="text-danger"><%=validationError.email[0].msg %></span>
+        <% } %> <% } %>
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" name="password" class="form-control" />
+        <% if (validationError) { %> <% if (validationError.password) { %>
+        <span class="text-danger"><%=validationError.password[0].msg %></span>
+        <% } %> <% } %>
+      </div>
+      <div class="form-check">
+        <input
+          class=""
+          type="checkbox"
+          checked
+          name="rememberMe"
+          value="1"
+          id="form1Example3"
+        />
+        <label class="form-check-label" for="form1Example3"> Remember Me </label>
+      </div>
+      <button class="btn w-50 mx-auto d-block text-center">Login</button>
+    </form>
+  </div>
+</div>
+<%- include("../include/footer.ejs") %> <%-
+include("../include/footerScript.ejs") %>

@@ -1,0 +1,84 @@
+<%- include("../include/head")  %> 
+<%- include("../include/aside")  %> 
+<%- include("../include/navePare")  %> 
+<%- include("../include/alert")  %> 
+<style>
+	.testPar {
+		width:250px;
+		overflow: hidden;
+		white-space:nowrap;
+	}
+</style>
+</head>
+    </body>
+        <!-- Main Wrapper -->
+        <div class="main-wrapper">
+            <!-- Page Wrapper -->
+            <div class="page-wrapper">
+                <div class="content container-fluid">
+                    <!-- Page Header -->
+                    <div class="page-header">
+                        <div class="row">
+                            <div class="col-sm-7 col-auto">
+                                <h3 class="page-title">كل الرسايل</h3>
+                                <ul class="breadcrumb">
+                                    <li class="breadcrumb-item"><a href="index.html">لوحه التحكم</a></li>
+                                    <li class="breadcrumb-item active">الرسايل</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <%- include("../include/notification")  %> 
+                    </div>
+                    <!-- /Page Header -->
+                    <div class="row">
+                        <div class="col-sm-12">
+							<div class="card">
+								<div class="card-body">
+									<div class="table-responsive">
+										<table class="datatable table table-hover table-center mb-0">
+											<thead>
+												<tr>
+													<th>الاسم</th>
+													<th>الايميل</th>
+													<th>الرساله</th>
+												</tr>
+											</thead>
+											<tbody>
+												<% Message.forEach(element => { %>
+													<tr>
+													<td><p class="testPar"><%= element.contactUsUser.name%></p> </td>
+													<td><p class="testPar"><%= element.contactUsUser.email%></p> </td>
+													<td><p class="testPar"><%= element.message%></p> </td>
+													
+													<td>
+														<a href="/dashboard/responsMessage/<%= element.id %>" class="btn btn-success">رد</a>
+														<form class="d-inline" method="post" action="dashboard/deleteMessage/<%= element.id %>">
+															<button class="btn btn-danger">حذف</button>
+														</form>
+
+													</td>
+												</tr>
+												<% }) %>
+
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+						</div>	
+                    </div>
+                </div>			
+            </div>
+            <!-- /Page Wrapper -->
+
+
+        <%- include("../include/footer_script")  %> 
+        		
+		<!-- Datatables JS -->
+
+		<script src="/backEnd/assets/plugins/datatables/datatables.min.js"></script>
+		<script src="/backEnd/assets/js/form-tags.js"></script>
+        <script  src="/backEnd/assets/js/script.js"></script>
+
+    </head>
+</body>
