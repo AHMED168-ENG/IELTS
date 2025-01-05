@@ -4,6 +4,7 @@ node_modules
 test
 ./public
 public
+/public
 sound
 ./sound
 ./public/backEnd/assets/sound
