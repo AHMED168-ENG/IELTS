@@ -5,6 +5,7 @@ const {
     Rename_uploade_img,
     removeImg,
 } = require("../../Helper/helper");
+const UsersModel = require("../../models/users");
 const UsersResultModel = require("../../models/usersresult");
 const UserJoinExam = require("../../models/userJoinExam");
 const Testing = require("../../models/testing");
@@ -41,7 +42,7 @@ const homePage = async (req, res, next) => {
 const userProfile = async (req, res, next) => {
     try {
         const userResult = await UsersResultModel.find({
-            userId: req.cookies.User.id,
+            userId: req.cookies.User._id,
             success: true,
         });
         const userDisability = await UserJoinExam.find({
@@ -171,7 +172,7 @@ const allTesting = async (req, res, nest) => {
 
 const enterExam = async (req, res, next) => {
     try {
-        const userId = req.cookies.User.id;
+        const userId = req.cookies.User._id;
         const examId = req.params.id;
         const today = new Date();
         today.setHours(0, 0, 0, 0);
@@ -461,7 +462,7 @@ const contactUs = async (req, res, nest) => {
 const contactUsPost = async (req, res, nest) => {
     try {
         await ContactUsModel.create({
-            userId: req.cookies.User.id,
+            userId: req.cookies.User._id,
             message: req.body.message,
         });
         returnWithMessage(
@@ -514,16 +515,8 @@ const EditPersonalInformationPost = async (req, res, nest) => {
         }
         req.body.image = file ? file : req.body.oldImage;
         req.body.gender = req.body.gender == "1" ? true : false;
-        console.log(req.body);
-        req.body.Disability =
-            req.body.Disability.length == 1
-                ? [req.body.Disability]
-                : req.body.Disability;
-        await UsersResultModel.update(req.body, {
-            where: {
-                id: req.cookies.User.id,
-            },
-        });
+        console.log(req.body)
+        await UsersModel.updateOne({ _id: req.cookies.User._id }, req.body);
         res.clearCookie("User");
 
         returnWithMessage(

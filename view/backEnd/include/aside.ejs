@@ -1,41 +1,49 @@
-			
-			<!-- Sidebar -->
-            <div class="sidebar" id="sidebar">
-                <div class="sidebar-inner slimscroll">
-					<div id="sidebar-menu" class="sidebar-menu">
-						<ul>
-							<li class="menu-title"> 
-								<span>Main</span>
-							</li>
-							<li class="<%= URL == "dashboard" ? "active" : "" %>"> 
-								<a href="dashboard" class="d-flex align-items-center justify-content-between"> <span>Control panel</span><i class="fe fe-home"></i></a>
-							</li>
-							
-							
-							<li class="submenu">
-								<a href="#" class="d-flex align-items-center justify-content-between"> <span> Users </span> <span class="menu-arrow" style="margin-left:20px"></span> <i class="fe fe-users"></i></a> 
-								<ul style="display: none;">
-									<li><a class="<%= URL == "/allUsers" ? "active" : "" %>" href="/dashboard/allUsers"> All Users </a></li>
-									<!-- <li><a class="<%= URL == "/allUsers" ? "active" : "" %>" href="/dashboard/allUsers"> اضافه مستخدم </a></li> -->
-								</ul>
-							</li>
-							<li class="submenu">
-								<a href="#" class="d-flex align-items-center justify-content-between"> <span> Sections </span> <span class="menu-arrow"></span><i style="font-size:20px" class="fe fe-bolt"></i></a> 
-								<ul style="display: none;">
-									<li><a class="<%= URL == "/AllSection" ? "active" : "" %>" href="/dashboard/AllSection"> All Sections</a></li>
-									<li><a class="<%= URL == "/addSection" ? "active" : "" %>" href="/dashboard/addSection"> Add Section </a></li>
-								</ul>
-							</li>
-							
-							
-							<li class="submenu">
-								<a href="#" class="d-flex align-items-center justify-content-between"> <span> Exams </span> <span class="menu-arrow"></span><i style="font-size:20px" class="fa fa-flask"></i></a> 
-								<ul style="display: none;">
-									<li><a class="<%= URL == "/AllTesting" ? "active" : "" %>" href="/dashboard/AllTesting"> All Exams</a></li>
-									<li><a class="<%= URL == "/addTesting" ? "active" : "" %>" href="/dashboard/addTesting"> Add Exam </a></li>
-								</ul>
-							</li>
-<!-- 										
+<!-- Sidebar -->
+<div class="sidebar" id="sidebar">
+	<div class="sidebar-inner slimscroll">
+		<div id="sidebar-menu" class="sidebar-menu">
+			<ul>
+				<li class="menu-title">
+					<span>Main</span>
+				</li>
+				<li class="<%= URL == " dashboard" ? "active" : "" %>">
+					<a href="/dashboard" class="d-flex align-items-center justify-content-between"> <span>Control
+							panel</span><i class="fe fe-home"></i></a>
+				</li>
+
+
+				<li class="submenu">
+					<a href="#" class="d-flex align-items-center justify-content-between"> <span> Users </span> <span
+							class="menu-arrow" style="margin-left:20px"></span> <i class="fe fe-users"></i></a>
+					<ul style="display: none;">
+						<li><a class="<%= URL == " /allUsers" ? "active" : "" %>" href="/dashboard/allUsers"> All Users
+							</a></li>
+						<!-- <li><a class="<%= URL == "/allUsers" ? "active" : "" %>" href="/dashboard/allUsers"> اضافه مستخدم </a></li> -->
+					</ul>
+				</li>
+				<li class="submenu">
+					<a href="#" class="d-flex align-items-center justify-content-between"> <span> Sections </span> <span
+							class="menu-arrow"></span><i style="font-size:20px" class="fe fe-bolt"></i></a>
+					<ul style="display: none;">
+						<li><a class="<%= URL == " /AllSection" ? "active" : "" %>" href="/dashboard/AllSection"> All
+								Sections</a></li>
+						<li><a class="<%= URL == " /addSection" ? "active" : "" %>" href="/dashboard/addSection"> Add
+								Section </a></li>
+					</ul>
+				</li>
+
+
+				<li class="submenu">
+					<a href="#" class="d-flex align-items-center justify-content-between"> <span> Exams </span> <span
+							class="menu-arrow"></span><i style="font-size:20px" class="fa fa-flask"></i></a>
+					<ul style="display: none;">
+						<li><a class="<%= URL == " /AllTesting" ? "active" : "" %>" href="/dashboard/AllTesting"> All
+								Exams</a></li>
+						<li><a class="<%= URL == " /addTesting" ? "active" : "" %>" href="/dashboard/addTesting"> Add
+								Exam </a></li>
+					</ul>
+				</li>
+				<!-- 										
 							
 							<li class="submenu">
 								<a href="#" class="d-flex align-items-center justify-content-between"> <span> رسايل المستخدمين </span> <span class="menu-arrow"></span><i style="font-size:20px" class="fa fa-text-height"></i></a> 
@@ -43,15 +51,15 @@
 									<li><a class="<%= URL == "/AllMessage" ? "active" : "" %>" href="/dashboard/AllMessage"> كل الرسايل </a></li>
 								</ul>
 							</li> -->
-<!-- 							
+				<!-- 							
 							<li class="submenu">
 								<a href="#" class="d-flex align-items-center justify-content-between"> <span> All User Answers</span> <span class="menu-arrow"></span><i style="font-size:20px" class="fa fa-text-height"></i></a> 
 								<ul style="display: none;">
 									<li><a class="<%= URL == "/showAllUserResult" ? "active" : "" %>" href="/dashboard/showAllUserResult"> All Answers</a></li>
 								</ul>
 							</li> -->
-							
-							<!-- <li class="submenu">
+
+				<!-- <li class="submenu">
 								<a href="#" class="d-flex align-items-center justify-content-between"> <span>  الارشادات  </span> <span class="menu-arrow"></span><i style="font-size:20px" class="fa fa-text-height"></i></a> 
 								<ul style="display: none;">
 									<li><a class="<%= URL == "/AllGide" ? "active" : "" %>" href="/dashboard/AllGide"> كل الارشادات </a></li>
@@ -74,9 +82,9 @@
 									<li><a class="<%= URL == "/addSound" ? "active" : "" %>" href="/dashboard/addSound"> اضافه برنامج صوتي </a></li>
 								</ul>
 							</li> -->
-										
-						</ul>
-					</div>
-                </div>
-            </div>
-			<!-- /Sidebar -->
+
+			</ul>
+		</div>
+	</div>
+</div>
+<!-- /Sidebar -->

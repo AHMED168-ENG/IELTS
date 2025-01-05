@@ -122,7 +122,7 @@ const signUpUserPost = async (req, res, next) => {
       req,
       res,
       "/signUp",
-      "تم تسجيل بياناتك لقد قمنا بارسال رساله علي الجميل الخاص بك لتفعيل الحساب",
+      "تم تسجيل بياناتك قم بتسجيل الدخول",
       "success"
     );
   } catch (error) {

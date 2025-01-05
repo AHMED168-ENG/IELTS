@@ -124,15 +124,27 @@ const removeImgFiled = (fields) => {
 const removeImg = (req, folder, imgname = "") => {
   if (!imgname) {
     req.files.forEach((element) => {
-      fs.unlinkSync(element.path);
+      if (fs.existsSync(element.path)) {
+        // التحقق من وجود الملف قبل الحذف
+        fs.unlinkSync(element.path);
+      } else {
+        console.log(`File not found: ${element.path}`);
+      }
     });
   } else {
     var imgname = imgname.split("--");
     for (var i = 0; i < imgname.length - 1; i++) {
-      fs.unlinkSync("public/backEnd/assets/img/" + folder + imgname[i]);
+      const filepath = "public/backEnd/assets/img/" + folder + imgname[i];
+      if (fs.existsSync(filepath)) {
+        // التحقق من وجود الملف قبل الحذف
+        fs.unlinkSync(filepath);
+      } else {
+        console.log(`File not found: ${filepath}`);
+      }
     }
   }
 };
+
 
 const removeFiles = (req, file = "") => {
   if (!file) {
