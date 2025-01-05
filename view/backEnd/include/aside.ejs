@@ -6,7 +6,7 @@
 				<li class="menu-title">
 					<span>Main</span>
 				</li>
-				<li class="<%= URL == " dashboard" ? "active" : "" %>">
+				<li class="<%= URL == `dashboard` ? `active` : `` %>">
 					<a href="/dashboard" class="d-flex align-items-center justify-content-between"> <span>Control
 							panel</span><i class="fe fe-home"></i></a>
 				</li>
@@ -16,7 +16,7 @@
 					<a href="#" class="d-flex align-items-center justify-content-between"> <span> Users </span> <span
 							class="menu-arrow" style="margin-left:20px"></span> <i class="fe fe-users"></i></a>
 					<ul style="display: none;">
-						<li><a class="<%= URL == " /allUsers" ? "active" : "" %>" href="/dashboard/allUsers"> All Users
+						<li><a class="<%= URL == ` /allUsers` ? `active` : `` %>" href="/dashboard/allUsers"> All Users
 							</a></li>
 						<!-- <li><a class="<%= URL == "/allUsers" ? "active" : "" %>" href="/dashboard/allUsers"> اضافه مستخدم </a></li> -->
 					</ul>
@@ -25,9 +25,9 @@
 					<a href="#" class="d-flex align-items-center justify-content-between"> <span> Sections </span> <span
 							class="menu-arrow"></span><i style="font-size:20px" class="fe fe-bolt"></i></a>
 					<ul style="display: none;">
-						<li><a class="<%= URL == " /AllSection" ? "active" : "" %>" href="/dashboard/AllSection"> All
+						<li><a class="<%= URL == `/AllSection` ? `active` : `` %>" href="/dashboard/AllSection"> All
 								Sections</a></li>
-						<li><a class="<%= URL == " /addSection" ? "active" : "" %>" href="/dashboard/addSection"> Add
+						<li><a class="<%= URL == `/addSection` ? `active` : `` %>" href="/dashboard/addSection"> Add
 								Section </a></li>
 					</ul>
 				</li>
@@ -37,9 +37,9 @@
 					<a href="#" class="d-flex align-items-center justify-content-between"> <span> Exams </span> <span
 							class="menu-arrow"></span><i style="font-size:20px" class="fa fa-flask"></i></a>
 					<ul style="display: none;">
-						<li><a class="<%= URL == " /AllTesting" ? "active" : "" %>" href="/dashboard/AllTesting"> All
+						<li><a class="<%= URL == `/AllTesting` ? `active` : `` %>" href="/dashboard/AllTesting"> All
 								Exams</a></li>
-						<li><a class="<%= URL == " /addTesting" ? "active" : "" %>" href="/dashboard/addTesting"> Add
+						<li><a class="<%= URL == `/addTesting` ? `active` : `` %>" href="/dashboard/addTesting"> Add
 								Exam </a></li>
 					</ul>
 				</li>
