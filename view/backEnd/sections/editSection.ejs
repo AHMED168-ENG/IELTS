@@ -1,111 +1,114 @@
-<%- include("../include/head")  %> 
-<link rel="stylesheet" href="/frontEnd/assets/css/style.css">
-    <link
-      rel="stylesheet"
-      href="/frontEnd/assets/plugins/select2/css/select2.min.css"
-    />
+<%- include("../include/head") %>
+	<link rel="stylesheet" href="/frontEnd/assets/css/style.css">
+	<link rel="stylesheet" href="/frontEnd/assets/plugins/select2/css/select2.min.css" />
 
-    <!-- Bootstrap CSS -->
-    <link
-      rel="stylesheet"
-      href="/frontEnd/assets/plugins/bootstrap-tagsinput/css/bootstrap-tagsinput.css"
-    />
+	<!-- Bootstrap CSS -->
+	<link rel="stylesheet" href="/frontEnd/assets/plugins/bootstrap-tagsinput/css/bootstrap-tagsinput.css" />
 
-    <link
-      rel="stylesheet"
-      href="/frontEnd/assets/plugins/dropzone/dropzone.min.css"
-    />
-    <!-- Main CSS -->
-	<link href="/backEnd/assets/Tagging-System-Autocomplete-Amsify-Suggestags/css/amsify.suggestags.css" rel="stylesheet">
-    <link rel="stylesheet" href="/frontEnd/assets/css/select.css" />
+	<link rel="stylesheet" href="/frontEnd/assets/plugins/dropzone/dropzone.min.css" />
+	<!-- Main CSS -->
+	<link href="/backEnd/assets/Tagging-System-Autocomplete-Amsify-Suggestags/css/amsify.suggestags.css"
+		rel="stylesheet">
+	<link rel="stylesheet" href="/frontEnd/assets/css/select.css" />
 
 	<style>
 		.amsify-suggestags-area .amsify-suggestags-input-area {
 			min-height: 250px !important;
 		}
+
 		body {
 			background-color: #f8f9fa;
 		}
+
 		.change-photo-btn {
 			background: #19C1DC;
-			width:200px;
+			width: 200px;
 			border-radius: 25px;
-			height:40px;
+			height: 40px;
 			display: flex;
 			align-items: center;
 			justify-content: center;
 			position: relative;
 		}
+
 		.change-photo-btn input {
 			position: absolute;
-			top:50%;
-			left:50%;
-			transform: translate(-50% , -50%);
-			width:100%;
-			height:100%;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			width: 100%;
+			height: 100%;
 			opacity: 0;
 		}
 	</style>
-<%- include("../include/aside")  %> 
-<%- include("../include/navePare")  %> 
-<%- include("../include/alert")  %> 
-</head>
-    </body>
-        <!-- Main Wrapper -->
-        <div class="main-wrapper">
-            <!-- Page Wrapper -->
-            <div class="page-wrapper">
-                <div class="content container-fluid">
-                    <!-- Page Header -->
-                    <div class="page-header">
-                        <div class="row">
-                            <div class="col-sm-7 col-auto">
-                                <h3 class="page-title">Sections </h3>
-                                <ul class="breadcrumb">
-                                    <li class="breadcrumb-item"><a href="index.html">Control Panel</a></li>
-                                    <li class="breadcrumb-item active">Add Section </li>
-                                </ul>
-                            </div>
-                        </div>
-                        <%- include("../include/notification")  %> 
-                    </div>
-                    <!-- /Page Header -->
-                    <div class="row">
-			            <div class="col-md-12">
-							<form method="post" enctype="application/x-www-form-urlencoded">
-								<!-- Basic Information -->
-								<div class="card">
-									<div class="card-body">
-										<h4 class="card-title">Simple Information</h4>
-										<div class="row form-row">
-											<div class="col-md-12">
-												<div class="form-group">
-													<div class="change-avatar">
-													</div>
+	<%- include("../include/aside") %>
+		<%- include("../include/navePare") %>
+			<%- include("../include/alert") %>
+				</head>
+				</body>
+				<!-- Main Wrapper -->
+				<div class="main-wrapper">
+					<!-- Page Wrapper -->
+					<div class="page-wrapper">
+						<div class="content container-fluid">
+							<!-- Page Header -->
+							<div class="page-header">
+								<div class="row">
+									<div class="col-sm-7 col-auto">
+										<h3 class="page-title">Sections </h3>
+										<ul class="breadcrumb">
+											<li class="breadcrumb-item"><a href="/">Control Panel</a></li>
+											<li class="breadcrumb-item active">Add Section </li>
+										</ul>
+									</div>
+								</div>
+								<%- include("../include/notification") %>
+							</div>
+							<!-- /Page Header -->
+							<div class="row">
+								<div class="col-md-12">
+									<form method="post" enctype="application/x-www-form-urlencoded">
+										<!-- Basic Information -->
+										<div class="card">
+											<div class="card-body">
+												<h4 class="card-title">Simple Information</h4>
+												<div class="row form-row">
+													<div class="col-md-12">
+														<div class="form-group">
+															<div class="change-avatar">
+															</div>
+														</div>
 													</div>
 												</div>
-											</div>
-											
-											<div class="col-md-12">
-												<div class="form-group">
-													<label>القسم<span class="text-danger">*</span><%= section.section %></label>
-													<select class="form-control" name="section">
-														
-														<option value="reading" <%= section.section == 'reading' ? 'selected' : '' %>>reading</option>
-														<option value="writing" <%= section.section == 'writing' ? 'selected' : '' %>>writing</option>
-														<option value="listening" <%= section.section == 'listening' ? 'selected' : '' %>>listening</option>
-														<option value="speaking" <%= section.section == 'speaking' ? 'selected' : '' %>>speaking</option>
-													</select>
-													<% if (validationError) { %>
-														<% if (validationError.section) { %>
-															<span class="text-danger"><%=validationError.section[0].msg %></span>
-														<% } %>
-													<% } %>  
-												</div>
-											</div>
-											
 
-											<!-- <div class="col-md-12">
+												<div class="col-md-12">
+													<div class="form-group">
+														<label>القسم<span class="text-danger">*</span>
+															<%= section.section %>
+														</label>
+														<select class="form-control" name="section">
+
+															<option value="reading" <%=section.section=='reading'
+																? 'selected' : '' %>>reading</option>
+															<option value="writing" <%=section.section=='writing'
+																? 'selected' : '' %>>writing</option>
+															<option value="listening" <%=section.section=='listening'
+																? 'selected' : '' %>>listening</option>
+															<option value="speaking" <%=section.section=='speaking'
+																? 'selected' : '' %>>speaking</option>
+														</select>
+														<% if (validationError) { %>
+															<% if (validationError.section) { %>
+																<span class="text-danger">
+																	<%=validationError.section[0].msg %>
+																</span>
+																<% } %>
+																	<% } %>
+													</div>
+												</div>
+
+
+												<!-- <div class="col-md-12">
 												<div class="form-group">
 													<label>تاريخ البدايه <span class="text-danger">*</span><%= section.startTime %></label>
 													<input name="startTime" type="datetime-local" class="form-control" value="<%= section.startTime %>" />
@@ -128,54 +131,50 @@
 												</div>
 											</div> -->
 
-											<div class="col-md-12">
-												<div class="form-group">
-													<label>Time in minutes <span class="text-danger">*</span></label>
-													<input name="duration" type="number" class="form-control" value="<%= section.duration %>" />
-													<% if (validationError && validationError.duration) { %>
-														<span class="text-danger"><%= validationError.duration[0].msg %></span>
-													<% } %>
+												<div class="col-md-12">
+													<div class="form-group">
+														<label>Time in minutes <span
+																class="text-danger">*</span></label>
+														<input name="duration" type="number" class="form-control"
+															value="<%= section.duration %>" />
+														<% if (validationError && validationError.duration) { %>
+															<span class="text-danger">
+																<%= validationError.duration[0].msg %>
+															</span>
+															<% } %>
+													</div>
 												</div>
-											</div>
 
+											</div>
 										</div>
-									</div>
 								</div>
 								<!-- /Basic Information -->
-							
+
 								<div class="submit-section submit-btn-bottom">
-									<button style="margin-bottom:30px" type="submit" class="btn btn-primary submit-btn">Save Changes</button>
+									<button style="margin-bottom:30px" type="submit"
+										class="btn btn-primary submit-btn">Save Changes</button>
 								</div>
-							</form>
+								</form>
+							</div>
 						</div>
-                    </div>
-                </div>			
-            </div>
-            <!-- /Page Wrapper -->
+					</div>
+				</div>
+				<!-- /Page Wrapper -->
 
 
-        <%- include("../include/footer_script")  %> 
-        		
-       
-		<script src="/backEnd/assets/plugins/datatables/jquery.dataTables.min.js"></script>
-		<script src="/backEnd/assets/plugins/datatables/datatables.min.js"></script>
-        <script src="/backEnd/assets/js/script.js"></script>
-<script
-  src="/frontEnd/assets/js/vendors.min.js"
-  type="text/javascript"
-></script>
-<!-- BEGIN VENDOR JS-->
-<!-- BEGIN PAGE VENDOR JS-->
-<script
-  src="/frontEnd/assets/js/select2.full.min.js"
-  type="text/javascript"
-></script>
-<!-- END PAGE VENDOR JS-->
+				<%- include("../include/footer_script") %>
 
-<!-- BEGIN PAGE LEVEL JS-->
-<script
-  src="/frontEnd/assets/js/form-select2.js"
-  type="text/javascript"
-></script>
-    </head>
-</body>
+
+					<script src="/backEnd/assets/plugins/datatables/jquery.dataTables.min.js"></script>
+					<script src="/backEnd/assets/plugins/datatables/datatables.min.js"></script>
+					<script src="/backEnd/assets/js/script.js"></script>
+					<script src="/frontEnd/assets/js/vendors.min.js" type="text/javascript"></script>
+					<!-- BEGIN VENDOR JS-->
+					<!-- BEGIN PAGE VENDOR JS-->
+					<script src="/frontEnd/assets/js/select2.full.min.js" type="text/javascript"></script>
+					<!-- END PAGE VENDOR JS-->
+
+					<!-- BEGIN PAGE LEVEL JS-->
+					<script src="/frontEnd/assets/js/form-select2.js" type="text/javascript"></script>
+					</head>
+					</body>

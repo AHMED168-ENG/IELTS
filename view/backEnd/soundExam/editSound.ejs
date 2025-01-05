@@ -1,229 +1,261 @@
-<%- include("../include/head")  %> 
-<link rel="stylesheet" href="/frontEnd/assets/css/style.css">
-    <link
-      rel="stylesheet"
-      href="/frontEnd/assets/plugins/select2/css/select2.min.css"
-    />
+<%- include("../include/head") %>
+	<link rel="stylesheet" href="/frontEnd/assets/css/style.css">
+	<link rel="stylesheet" href="/frontEnd/assets/plugins/select2/css/select2.min.css" />
 
-    <!-- Bootstrap CSS -->
-    <link
-      rel="stylesheet"
-      href="/frontEnd/assets/plugins/bootstrap-tagsinput/css/bootstrap-tagsinput.css"
-    />
+	<!-- Bootstrap CSS -->
+	<link rel="stylesheet" href="/frontEnd/assets/plugins/bootstrap-tagsinput/css/bootstrap-tagsinput.css" />
 
-    <link
-      rel="stylesheet"
-      href="/frontEnd/assets/plugins/dropzone/dropzone.min.css"
-    />
-    <!-- Main CSS -->
-	<link href="/backEnd/assets/Tagging-System-Autocomplete-Amsify-Suggestags/css/amsify.suggestags.css" rel="stylesheet">
-    <link rel="stylesheet" href="/frontEnd/assets/css/select.css" />
+	<link rel="stylesheet" href="/frontEnd/assets/plugins/dropzone/dropzone.min.css" />
+	<!-- Main CSS -->
+	<link href="/backEnd/assets/Tagging-System-Autocomplete-Amsify-Suggestags/css/amsify.suggestags.css"
+		rel="stylesheet">
+	<link rel="stylesheet" href="/frontEnd/assets/css/select.css" />
 
 	<style>
 		.amsify-suggestags-area .amsify-suggestags-input-area {
 			min-height: 250px !important;
 		}
+
 		body {
 			background-color: #f8f9fa;
 		}
+
 		.change-photo-btn {
 			background: #19C1DC;
-			width:200px;
+			width: 200px;
 			border-radius: 25px;
-			height:40px;
+			height: 40px;
 			display: flex;
 			align-items: center;
 			justify-content: center;
 			position: relative;
 		}
+
 		.change-photo-btn input {
 			position: absolute;
-			top:50%;
-			left:50%;
-			transform: translate(-50% , -50%);
-			width:100%;
-			height:100%;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			width: 100%;
+			height: 100%;
 			opacity: 0;
 		}
 	</style>
-<%- include("../include/aside")  %> 
-<%- include("../include/navePare")  %> 
-<%- include("../include/alert")  %> 
-</head>
-    </body>
-        <!-- Main Wrapper -->
-        <div class="main-wrapper">
-            <!-- Page Wrapper -->
-            <div class="page-wrapper">
-                <div class="content container-fluid">
-                    <!-- Page Header -->
-                    <div class="page-header">
-                        <div class="row">
-                            <div class="col-sm-7 col-auto">
-                                <h3 class="page-title">التمرينات الصوتيه </h3>
-                                <ul class="breadcrumb">
-                                    <li class="breadcrumb-item"><a href="index.html">لوحه التحكم</a></li>
-                                    <li class="breadcrumb-item active">اضافه تمرين </li>
-                                </ul>
-                            </div>
-                        </div>
-                        <%- include("../include/notification")  %> 
-                    </div>
-                    <!-- /Page Header -->
-                    <div class="row">
-			            <div class="col-md-12">
-							<form method="post" enctype="multipart/form-data">
-								<!-- Basic Information -->
-								<div class="card">
-									<div class="card-body">
-										<h4 class="card-title">معلومات بسيطه</h4>
-										<div class="row form-row">
-											<div class="col-md-12">
-												<div class="form-group">
-													<div class="change-avatar">
-														
-														<div class="row">
-															<input type="hidden" name="oldImage" value="<%= sound.image %>">
-															<input type="hidden" name="oldPdf" value="<%= sound.pdf %>">
-															<div class="upload-img col-md-6">
-															<img style="width:200px;height:150px;margin:0 10px 10px 0" src="/backEnd/assets/img/sound/<%= sound.image.split("--")[0] %>" alt="User Image">
-															<div class="change-photo-btn">
-																<span><i class="fa fa-upload"></i> ارقع صوره</span>
-																<input type="file" class="upload " name="image">
-															 
+	<%- include("../include/aside") %>
+		<%- include("../include/navePare") %>
+			<%- include("../include/alert") %>
+				</head>
+				</body>
+				<!-- Main Wrapper -->
+				<div class="main-wrapper">
+					<!-- Page Wrapper -->
+					<div class="page-wrapper">
+						<div class="content container-fluid">
+							<!-- Page Header -->
+							<div class="page-header">
+								<div class="row">
+									<div class="col-sm-7 col-auto">
+										<h3 class="page-title">التمرينات الصوتيه </h3>
+										<ul class="breadcrumb">
+											<li class="breadcrumb-item"><a href="/">لوحه التحكم</a></li>
+											<li class="breadcrumb-item active">اضافه تمرين </li>
+										</ul>
+									</div>
+								</div>
+								<%- include("../include/notification") %>
+							</div>
+							<!-- /Page Header -->
+							<div class="row">
+								<div class="col-md-12">
+									<form method="post" enctype="multipart/form-data">
+										<!-- Basic Information -->
+										<div class="card">
+											<div class="card-body">
+												<h4 class="card-title">معلومات بسيطه</h4>
+												<div class="row form-row">
+													<div class="col-md-12">
+														<div class="form-group">
+															<div class="change-avatar">
+
+																<div class="row">
+																	<input type="hidden" name="oldImage"
+																		value="<%= sound.image %>">
+																	<input type="hidden" name="oldPdf"
+																		value="<%= sound.pdf %>">
+																	<div class="upload-img col-md-6">
+																		<img style="width:200px;height:150px;margin:0 10px 10px 0"
+																			src="/backEnd/assets/img/sound/<%= sound.image.split("
+																			--")[0] %>" alt="User Image">
+																		<div class="change-photo-btn">
+																			<span><i class="fa fa-upload"></i> ارقع
+																				صوره</span>
+																			<input type="file" class="upload "
+																				name="image">
+
+																		</div>
+																		<% if (validationError) { %>
+																			<% if (validationError.image) { %>
+																				<span class="text-danger">
+																					<%=validationError.image[0].msg %>
+																				</span>
+																				<% } %>
+																					<% } %>
+																						<small
+																							class="form-text text-muted">Allowed
+																							JPG, GIF or PNG. Max size of
+																							2MB</small>
+																	</div>
+																	<div class="upload-img col-md-6">
+																		<a style="width:200px;height:150px;margin:0 10px 10px 0"
+																			target="_blank"
+																			href="/backEnd/assets/img/sound/<%= sound.pdf.split("
+																			--")[0] %>">
+																			<img style="width:200px;height:150px;margin:0 10px 10px 0"
+																				src="/backEnd/assets/img/gide/avatar.jpg"
+																				alt="User Image"></a>
+
+																		<div class="change-photo-btn">
+																			<span><i class="fa fa-upload"></i> ارقع
+																				ملف</span>
+																			<input accept="pdf" type="file"
+																				class="upload " name="pdf">
+
+																		</div>
+																		<% if (validationError) { %>
+																			<% if (validationError.pdf) { %>
+																				<span class="text-danger">
+																					<%=validationError.pdf[0].msg %>
+																				</span>
+																				<% } %>
+																					<% } %>
+																						<small
+																							class="form-text text-muted">Allowed
+																							pdf</small>
+																	</div>
+																</div>
 															</div>
-																<% if (validationError) { %>
-																	<% if (validationError.image) { %>
-																		<span class="text-danger"><%=validationError.image[0].msg %></span>
-																	<% } %>
-																<% } %> 
-															<small class="form-text text-muted">Allowed JPG, GIF or PNG. Max size of 2MB</small>
 														</div>
-														<div class="upload-img col-md-6">
-															<a style="width:200px;height:150px;margin:0 10px 10px 0" target="_blank" href="/backEnd/assets/img/sound/<%= sound.pdf.split("--")[0] %>">
-															<img style="width:200px;height:150px;margin:0 10px 10px 0" src="/backEnd/assets/img/gide/avatar.jpg" alt="User Image"></a>
-															
-															<div class="change-photo-btn">
-																<span><i class="fa fa-upload"></i> ارقع ملف</span>
-																<input accept="pdf" type="file" class="upload " name="pdf">
-															 
-															</div>
-																<% if (validationError) { %>
-																	<% if (validationError.pdf) { %>
-																		<span class="text-danger"><%=validationError.pdf[0].msg %></span>
+													</div>
+													<div class="col-md-12">
+														<div class="form-group">
+															<label>لمحه عن الارشاد <span
+																	class="text-danger">*</span></label>
+															<textarea name="title" type="text"
+																class="form-control"><%= sound.title %></textarea>
+															<% if (validationError) { %>
+																<% if (validationError.title) { %>
+																	<span class="text-danger">
+																		<%=validationError.title[0].msg %>
+																	</span>
 																	<% } %>
-																<% } %> 
-															<small class="form-text text-muted">Allowed pdf</small>
+																		<% } %>
 														</div>
+													</div>
+
+
+													<div class="col-md-12">
+														<div class="form-group">
+															<label>الاضطراب <span class="text-danger">*</span></label>
+															<select class="form-control" name="disability" id="">
+																<option value=""></option>
+																<% disability.forEach(element=> { %>
+																	<option value="<%= element.id %>"
+																		<%=sound.disability==element.id ? "selected"
+																		: "" %>><%= element.name %>
+																	</option>
+																	<% }) %>
+															</select>
+															<% if (validationError) { %>
+																<% if (validationError.disability) { %>
+																	<span class="text-danger">
+																		<%=validationError.disability[0].msg %>
+																	</span>
+																	<% } %>
+																		<% } %>
+														</div>
+													</div>
+
+
+													<div class="col-md-12">
+														<div class="form-group">
+															<label> الاعاقات المشترك فيها هذا الملف الصوتي<span
+																	class="text-danger">*</span></label>
+															<select multiple="multiple" class="select2 form-control"
+																name="otherDisabilities" id="">
+																<option value=""></option>
+																<% disability.forEach(element=> { %>
+																	<option value="<%= element.id %>"
+																		<%=sound.otherDisabilities.includes(element.id)
+																		? "selected" : "" %>><%= element.name %>
+																	</option>
+																	<% }) %>
+															</select>
+															<% if (validationError) { %>
+																<% if (validationError.otherDisabilities) { %>
+																	<span class="text-danger">
+																		<%=validationError.otherDisabilities[0].msg %>
+																	</span>
+																	<% } %>
+																		<% } %>
+														</div>
+													</div>
+
+													<div class="col-md-12">
+														<div class="form-group">
+															<label>هل التدريب الصوتي مشترك في اكثر من اعاقه<span
+																	class="text-danger">*</span></label>
+															<input <%=sound.isOther ? "checked" : "" %> name="isOther"
+															type="checkbox" class="form-control"></textarea>
+															<% if (validationError) { %>
+																<% if (validationError.isOther) { %>
+																	<span class="text-danger">
+																		<%=validationError.isOther[0].msg %>
+																	</span>
+																	<% } %>
+																		<% } %>
+														</div>
+													</div>
+
+													<div class="col-md-12">
+														<div class="form-group">
+															<label for="active">التفعيل <span
+																	class="text-danger">*</span></label>
+															<input id="active" value="1" name="active" <%=sound.active
+																? "checked" : "" %> type="checkbox"
+															class="form-control">
+
 														</div>
 													</div>
 												</div>
 											</div>
-											<div class="col-md-12">
-												<div class="form-group">
-													<label>لمحه عن الارشاد <span class="text-danger">*</span></label>
-													<textarea name="title"  type="text" class="form-control"><%= sound.title %></textarea>
-													<% if (validationError) { %>
-														<% if (validationError.title) { %>
-															<span class="text-danger"><%=validationError.title[0].msg %></span>
-														<% } %>
-													<% } %>  
-												</div>
-											</div>
-											
-
-											<div class="col-md-12">
-												<div class="form-group">
-													<label>الاضطراب <span class="text-danger">*</span></label>
-													<select class="form-control" name="disability" id="">
-														<option value=""></option>
-														<% disability.forEach(element => { %>
-															<option value="<%= element.id %>" <%= sound.disability == element.id ? "selected" : "" %>><%= element.name %></option>
-														<% }) %>
-													</select>
-													<% if (validationError) { %>
-														<% if (validationError.disability) { %>
-															<span class="text-danger"><%=validationError.disability[0].msg %></span>
-														<% } %>
-													<% } %>  
-												</div>
-											</div>
-
-                                            
-											<div class="col-md-12">
-												<div class="form-group">
-													<label> الاعاقات المشترك فيها هذا الملف الصوتي<span class="text-danger">*</span></label>
-													<select multiple="multiple" class="select2 form-control" name="otherDisabilities" id="">
-														<option value=""></option>
-														<% disability.forEach(element => { %>
-															<option value="<%= element.id %>" <%= sound.otherDisabilities.includes(element.id) ? "selected" : "" %>><%= element.name %></option>
-														<% }) %>
-													</select>
-													<% if (validationError) { %>
-														<% if (validationError.otherDisabilities) { %>
-															<span class="text-danger"><%=validationError.otherDisabilities[0].msg %></span>
-														<% } %>
-													<% } %>  
-												</div>
-											</div>
-
-											<div class="col-md-12">
-												<div class="form-group">
-													<label>هل التدريب الصوتي مشترك في اكثر من اعاقه<span class="text-danger">*</span></label>
-													<input <%= sound.isOther ? "checked" : "" %> name="isOther" type="checkbox" class="form-control"></textarea>
-													<% if (validationError) { %>
-														<% if (validationError.isOther) { %>
-															<span class="text-danger"><%=validationError.isOther[0].msg %></span>
-														<% } %>
-													<% } %>  
-												</div>
-											</div>
-
-											<div class="col-md-12">
-												<div class="form-group">
-													<label for="active">التفعيل <span class="text-danger">*</span></label>
-													<input id="active" value="1" name="active" <%= sound.active ? "checked" : ""  %> type="checkbox" class="form-control">
-													
-												</div>
-											</div>
 										</div>
-									</div>
+										<!-- /Basic Information -->
+
+										<div class="submit-section submit-btn-bottom">
+											<button style="margin-bottom:30px" type="submit"
+												class="btn btn-primary submit-btn">Save Changes</button>
+										</div>
+									</form>
 								</div>
-								<!-- /Basic Information -->
-							
-								<div class="submit-section submit-btn-bottom">
-									<button style="margin-bottom:30px" type="submit" class="btn btn-primary submit-btn">Save Changes</button>
-								</div>
-							</form>
+							</div>
 						</div>
-                    </div>
-                </div>			
-            </div>
-            <!-- /Page Wrapper -->
+					</div>
+					<!-- /Page Wrapper -->
 
 
-        <%- include("../include/footer_script")  %> 
-        		
-       
-		<script src="/backEnd/assets/plugins/datatables/jquery.dataTables.min.js"></script>
-		<script src="/backEnd/assets/plugins/datatables/datatables.min.js"></script>
-        <script src="/backEnd/assets/js/script.js"></script>
-        <script
-        src="/frontEnd/assets/js/vendors.min.js"
-        type="text/javascript"
-        ></script>
-        <!-- BEGIN VENDOR JS-->
-        <!-- BEGIN PAGE VENDOR JS-->
-        <script
-        src="/frontEnd/assets/js/select2.full.min.js"
-        type="text/javascript"
-        ></script>
-        <!-- END PAGE VENDOR JS-->
+					<%- include("../include/footer_script") %>
 
-        <!-- BEGIN PAGE LEVEL JS-->
-        <script
-        src="/frontEnd/assets/js/form-select2.js"
-        type="text/javascript"
-        ></script>
-    </head>
-</body>
+
+						<script src="/backEnd/assets/plugins/datatables/jquery.dataTables.min.js"></script>
+						<script src="/backEnd/assets/plugins/datatables/datatables.min.js"></script>
+						<script src="/backEnd/assets/js/script.js"></script>
+						<script src="/frontEnd/assets/js/vendors.min.js" type="text/javascript"></script>
+						<!-- BEGIN VENDOR JS-->
+						<!-- BEGIN PAGE VENDOR JS-->
+						<script src="/frontEnd/assets/js/select2.full.min.js" type="text/javascript"></script>
+						<!-- END PAGE VENDOR JS-->
+
+						<!-- BEGIN PAGE LEVEL JS-->
+						<script src="/frontEnd/assets/js/form-select2.js" type="text/javascript"></script>
+						</head>
+						</body>

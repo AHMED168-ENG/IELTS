@@ -1,199 +1,218 @@
-<%- include("../include/head")  %> 
-<link rel="stylesheet" href="/frontEnd/assets/css/style.css">
-    <link
-      rel="stylesheet"
-      href="/frontEnd/assets/plugins/select2/css/select2.min.css"
-    />
+<%- include("../include/head") %>
+	<link rel="stylesheet" href="/frontEnd/assets/css/style.css">
+	<link rel="stylesheet" href="/frontEnd/assets/plugins/select2/css/select2.min.css" />
 
-    <!-- Bootstrap CSS -->
-    <link
-      rel="stylesheet"
-      href="/frontEnd/assets/plugins/bootstrap-tagsinput/css/bootstrap-tagsinput.css"
-    />
+	<!-- Bootstrap CSS -->
+	<link rel="stylesheet" href="/frontEnd/assets/plugins/bootstrap-tagsinput/css/bootstrap-tagsinput.css" />
 
-    <link
-      rel="stylesheet"
-      href="/frontEnd/assets/plugins/dropzone/dropzone.min.css"
-    />
-    <!-- Main CSS -->
+	<link rel="stylesheet" href="/frontEnd/assets/plugins/dropzone/dropzone.min.css" />
+	<!-- Main CSS -->
 	<style>
 		body {
 			background-color: #f8f9fa;
 		}
+
 		.change-photo-btn {
 			background: #19C1DC;
-			width:200px;
+			width: 200px;
 			border-radius: 25px;
-			height:40px;
+			height: 40px;
 			display: flex;
 			align-items: center;
 			justify-content: center;
 			position: relative;
 		}
+
 		.change-photo-btn input {
 			position: absolute;
-			top:50%;
-			left:50%;
-			transform: translate(-50% , -50%);
-			width:100%;
-			height:100%;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			width: 100%;
+			height: 100%;
 			opacity: 0;
 		}
 	</style>
-<%- include("../include/aside")  %> 
-<%- include("../include/navePare")  %> 
-<%- include("../include/alert")  %> 
-</head>
-    </body>
-        <!-- Main Wrapper -->
-        <div class="main-wrapper">
-            <!-- Page Wrapper -->
-            <div class="page-wrapper">
-                <div class="content container-fluid">
-                    <!-- Page Header -->
-                    <div class="page-header">
-                        <div class="row">
-                            <div class="col-sm-7 col-auto">
-                                <h3 class="page-title">Users</h3>
-                                <ul class="breadcrumb">
-                                    <li class="breadcrumb-item"><a href="index.html">Control Panel</a></li>
-                                    <li class="breadcrumb-item active">Users</li>
-                                </ul>
-                            </div>
-                        </div>
-                        <%- include("../include/notification")  %> 
-                    </div>
-                    <!-- /Page Header -->
-                    <div class="row">
-			            <div class="col-md-12">
-							<form method="post" enctype="multipart/form-data">
-								<!-- Basic Information -->
-								<div class="card">
-									<div class="card-body">
-										<h4 class="card-title">Simple Information</h4>
-										<div class="row form-row">
-											<div class="col-md-12">
-												<div class="form-group">
-													<div class="change-avatar">
-														<div class="profile-img">
-															<img style="width:150px;height:150px" src="<%= user?.image ? "/backEnd/assets/img/users/" + user?.image?.split("--")[0] : "/backEnd/assets/img/users/avatar.png" %>" alt="User Image">
-														</div>
-														<div class="upload-img">
-															<div class="change-photo-btn">
-																<span><i class="fa fa-upload"></i> Patch A Picture</span>
-																<input type="file" class="upload " name="image">
-																<% if (validationError) { %>
-																	<% if (validationError.image) { %>
-																		<span class="text-danger"><%=validationError.image[0].msg %></span>
-																	<% } %>
-																<% } %>  
+	<%- include("../include/aside") %>
+		<%- include("../include/navePare") %>
+			<%- include("../include/alert") %>
+				</head>
+				</body>
+				<!-- Main Wrapper -->
+				<div class="main-wrapper">
+					<!-- Page Wrapper -->
+					<div class="page-wrapper">
+						<div class="content container-fluid">
+							<!-- Page Header -->
+							<div class="page-header">
+								<div class="row">
+									<div class="col-sm-7 col-auto">
+										<h3 class="page-title">Users</h3>
+										<ul class="breadcrumb">
+											<li class="breadcrumb-item"><a href="/">Control Panel</a></li>
+											<li class="breadcrumb-item active">Users</li>
+										</ul>
+									</div>
+								</div>
+								<%- include("../include/notification") %>
+							</div>
+							<!-- /Page Header -->
+							<div class="row">
+								<div class="col-md-12">
+									<form method="post" enctype="multipart/form-data">
+										<!-- Basic Information -->
+										<div class="card">
+											<div class="card-body">
+												<h4 class="card-title">Simple Information</h4>
+												<div class="row form-row">
+													<div class="col-md-12">
+														<div class="form-group">
+															<div class="change-avatar">
+																<div class="profile-img">
+																	<img style="width:150px;height:150px"
+																		src="<%= user?.image ? "
+																		/backEnd/assets/img/users/" +
+																		user?.image?.split("--")[0]
+																		: "/backEnd/assets/img/users/avatar.png" %>"
+																	alt="User Image">
+																</div>
+																<div class="upload-img">
+																	<div class="change-photo-btn">
+																		<span><i class="fa fa-upload"></i> Patch A
+																			Picture</span>
+																		<input type="file" class="upload " name="image">
+																		<% if (validationError) { %>
+																			<% if (validationError.image) { %>
+																				<span class="text-danger">
+																					<%=validationError.image[0].msg %>
+																				</span>
+																				<% } %>
+																					<% } %>
+																	</div>
+																	<small class="form-text text-muted">Allowed JPG, GIF
+																		or PNG. Max size of 2MB</small>
+																</div>
 															</div>
-															<small class="form-text text-muted">Allowed JPG, GIF or PNG. Max size of 2MB</small>
+														</div>
+													</div>
+													<div class="col-md-6">
+														<div class="form-group">
+															<label>الايميل <span class="text-danger">*</span></label>
+															<input value="<%= user.email %>" name="email" type="email"
+																class="form-control">
+															<% if (validationError) { %>
+																<% if (validationError.email) { %>
+																	<span class="text-danger">
+																		<%=validationError.email[0].msg %>
+																	</span>
+																	<% } %>
+																		<% } %>
+														</div>
+													</div>
+													<div class="col-md-6">
+														<div class="form-group">
+															<label>الاسم <span class="text-danger">*</span></label>
+															<input name="name" value="<%= user.name %>" type="text"
+																class="form-control">
+															<% if (validationError) { %>
+																<% if (validationError.name) { %>
+																	<span class="text-danger">
+																		<%=validationError.name[0].msg %>
+																	</span>
+																	<% } %>
+																		<% } %>
+														</div>
+													</div>
+													<div class="col-md-6">
+														<div class="form-group">
+															<label>العمر <span class="text-danger">*</span></label>
+															<input value="<%= user.age %>" name="age" type="text"
+																class="form-control">
+															<% if (validationError) { %>
+																<% if (validationError.age) { %>
+																	<span class="text-danger">
+																		<%=validationError.age[0].msg %>
+																	</span>
+																	<% } %>
+																		<% } %>
+														</div>
+													</div>
+													<div class="col-md-6">
+														<div class="form-group ">
+															<label>النوع</label>
+															<select name="gender" id="" class="form-control">
+																<option value="1" <%=user.gender ? "selected" : "" %>
+																	>ذكر</option>
+																<option value="0" <%=!user.gender ? "selected" : "" %>
+																	>انثي</option>
+															</select>
+														</div>
+													</div>
+													<div class="col-md-12">
+														<div class="form-group">
+															<label>الاعاقه</label>
+															<select name="Disability" class="form-control ">
+																<option <%=user.gender ? "selected" : "" %>
+																	value="1">Male</option>
+																<option <%=!user.gender ? "selected" : "" %>
+																	value="0">Female</option>
+															</select>
+														</div>
+													</div>
+													<div class="col-md-4">
+														<div class="form-group">
+															<label for="isAdmin">هل ادمن</label>
+															<input type="checkbox" <%=user.isAdmin ? "checked" : "" %>
+															id="isAdmin" name="isAdmin">
+														</div>
+													</div>
+													<div class="col-md-4 d-none">
+														<div class="form-group">
+															<label for="isDoctor">هل هو متخصص</label>
+															<input type="checkbox" <%=user.isDoctor ? "checked" : "" %>
+															id="isDoctor" name="isDoctor">
+														</div>
+													</div>
+													<div class="col-md-4">
+														<div class="form-group">
+															<label for="isActive">هل هو فعال</label>
+															<input type="checkbox" <%=user.active ? "checked" : "" %>
+															id="isActive" name="active">
 														</div>
 													</div>
 												</div>
 											</div>
-											<div class="col-md-6">
-												<div class="form-group">
-													<label>الايميل <span class="text-danger">*</span></label>
-													<input value="<%= user.email %>" name="email" type="email" class="form-control">
-													<% if (validationError) { %>
-														<% if (validationError.email) { %>
-															<span class="text-danger"><%=validationError.email[0].msg %></span>
-														<% } %>
-													<% } %>  
-												</div>
-											</div>
-											<div class="col-md-6">
-												<div class="form-group">
-													<label>الاسم <span class="text-danger">*</span></label>
-													<input name="name" value="<%= user.name %>" type="text" class="form-control">
-													<% if (validationError) { %>
-														<% if (validationError.name) { %>
-															<span class="text-danger"><%=validationError.name[0].msg %></span>
-														<% } %>
-													<% } %>  
-												</div>
-											</div>
-											<div class="col-md-6">
-												<div class="form-group">
-													<label>العمر <span class="text-danger">*</span></label>
-													<input value="<%= user.age %>" name="age" type="text" class="form-control">
-													<% if (validationError) { %>
-														<% if (validationError.age) { %>
-															<span class="text-danger"><%=validationError.age[0].msg %></span>
-														<% } %>
-													<% } %>  
-												</div>
-											</div>
-											<div class="col-md-6">
-												<div class="form-group ">
-													<label>النوع</label>
-													<select name="gender" id="" class="form-control">
-														<option value="1" <%= user.gender ? "selected" : "" %>>ذكر</option>
-														<option value="0" <%= !user.gender ? "selected" : "" %>>انثي</option>
-													</select>
-												</div>
-											</div>
-											<div class="col-md-12">
-												<div class="form-group">
-													<label>الاعاقه</label>
-													<select name="Disability" class="form-control ">
-														<option <%= user.gender ? "selected" : "" %> value="1">Male</option>
-														<option <%= !user.gender ? "selected" : "" %> value="0">Female</option>
-													</select>
-												</div>
-											</div>
-											<div class="col-md-4">
-												<div class="form-group">
-													<label for="isAdmin">هل ادمن</label>
-													<input type="checkbox" <%= user.isAdmin ? "checked" : "" %> id="isAdmin" name="isAdmin">
-												</div>
-											</div>
-											<div class="col-md-4 d-none">
-												<div class="form-group">
-													<label for="isDoctor">هل هو متخصص</label>
-													<input type="checkbox" <%= user.isDoctor ? "checked" : "" %> id="isDoctor" name="isDoctor">
-												</div>
-											</div>
-											<div class="col-md-4">
-												<div class="form-group">
-													<label for="isActive">هل هو فعال</label>
-													<input type="checkbox" <%= user.active ? "checked" : "" %> id="isActive" name="active">
-												</div>
-											</div>
 										</div>
-									</div>
+										<!-- /Basic Information -->
+
+										<input type="hidden" name="OlduserImage" value="<%= user.image %>">
+										<div class="submit-section submit-btn-bottom">
+											<button style="margin-bottom:30px" type="submit"
+												class="btn btn-primary submit-btn">Save Changes</button>
+										</div>
+									</form>
 								</div>
-								<!-- /Basic Information -->
-							
-								<input type="hidden" name="OlduserImage" value="<%= user.image %>">
-								<div class="submit-section submit-btn-bottom">
-									<button style="margin-bottom:30px" type="submit" class="btn btn-primary submit-btn">Save Changes</button>
-								</div>
-							</form>
+							</div>
 						</div>
-                    </div>
-                </div>			
-            </div>
-            <!-- /Page Wrapper -->
+					</div>
+					<!-- /Page Wrapper -->
 
 
-        <%- include("../include/footer_script")  %> 
-        		
-        
-		<script src="/backEnd/assets/plugins/datatables/jquery.dataTables.min.js"></script>
-		<script src="/backEnd/assets/plugins/datatables/datatables.min.js"></script>
+					<%- include("../include/footer_script") %>
 
-        <script src="/frontEnd/assets/plugins/theia-sticky-sidebar/ResizeSensor.js"></script>
-        <script src="/frontEnd/assets/plugins/theia-sticky-sidebar/theia-sticky-sidebar.js"></script>
-		
-		<script src="/frontEnd/assets/plugins/select2/js/select2.min.js"></script>
-		
-		<script src="/frontEnd/assets/plugins/dropzone/dropzone.min.js"></script>
-		<script src="/frontEnd/assets/plugins/bootstrap-tagsinput/js/bootstrap-tagsinput.js"></script>	
-		<script src="/frontEnd/assets/js/profile-settings.js"></script>
-        <script src="/backEnd/assets/js/script.js"></script>
 
-    </head>
-</body>
+						<script src="/backEnd/assets/plugins/datatables/jquery.dataTables.min.js"></script>
+						<script src="/backEnd/assets/plugins/datatables/datatables.min.js"></script>
+
+						<script src="/frontEnd/assets/plugins/theia-sticky-sidebar/ResizeSensor.js"></script>
+						<script src="/frontEnd/assets/plugins/theia-sticky-sidebar/theia-sticky-sidebar.js"></script>
+
+						<script src="/frontEnd/assets/plugins/select2/js/select2.min.js"></script>
+
+						<script src="/frontEnd/assets/plugins/dropzone/dropzone.min.js"></script>
+						<script src="/frontEnd/assets/plugins/bootstrap-tagsinput/js/bootstrap-tagsinput.js"></script>
+						<script src="/frontEnd/assets/js/profile-settings.js"></script>
+						<script src="/backEnd/assets/js/script.js"></script>
+
+						</head>
+						</body>

@@ -1,74 +1,73 @@
-<%- include("../include/head")  %> 
-<%- include("../include/aside")  %> 
-<%- include("../include/navePare")  %> 
-<%- include("../include/alert")  %> 
-<style>
-	.testPar {
-		width:250px;
-		overflow: hidden;
-		white-space:nowrap;
-	}
-</style>
-</head>
-    </body>
-        <!-- Main Wrapper -->
-        <div class="main-wrapper">
-            <!-- Page Wrapper -->
-            <div class="page-wrapper">
-                <div class="content container-fluid">
-                    <!-- Page Header -->
-                    <div class="page-header">
-                        <div class="row">
-                            <div class="col-sm-7 col-auto">
-                                <h3 class="page-title"> الرد علي رساله العميل</h3>
-                                <ul class="breadcrumb">
-                                    <li class="breadcrumb-item"><a href="index.html">لوحه التحكم</a></li>
-                                    <li class="breadcrumb-item active">الرد</li>
-                                </ul>
+<%- include("../include/head") %>
+    <%- include("../include/aside") %>
+        <%- include("../include/navePare") %>
+            <%- include("../include/alert") %>
+                <style>
+                    .testPar {
+                        width: 250px;
+                        overflow: hidden;
+                        white-space: nowrap;
+                    }
+                </style>
+                </head>
+                </body>
+                <!-- Main Wrapper -->
+                <div class="main-wrapper">
+                    <!-- Page Wrapper -->
+                    <div class="page-wrapper">
+                        <div class="content container-fluid">
+                            <!-- Page Header -->
+                            <div class="page-header">
+                                <div class="row">
+                                    <div class="col-sm-7 col-auto">
+                                        <h3 class="page-title"> الرد علي رساله العميل</h3>
+                                        <ul class="breadcrumb">
+                                            <li class="breadcrumb-item"><a href="/">لوحه التحكم</a></li>
+                                            <li class="breadcrumb-item active">الرد</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <%- include("../include/notification") %>
                             </div>
+                            <!-- /Page Header -->
+                            <div class="contact">
+                                <div class="container col-md-6">
+                                    <h1 style="margin-bottom:40px" class="text-center">الرد علي <span
+                                            style="font-size:20px">(<%= message.contactUsUser.name %>)</span></h1>
+                                    <form method="post">
+                                        <div class="form-group">
+                                            <textarea readonly style="width:100%;min-height:200px" class="form-control"
+                                                placeholder="رساله المرسل"><%= message.message %></textarea>
+                                            <textarea style="width:100%;min-height:200px" required name="message"
+                                                class="form-control" placeholder="الرد"></textarea>
+                                            <input type="hidden" value="<%= message.contactUsUser.email %>" name="email"
+                                                id="">
+                                            <input type="hidden" value="<%= message.contactUsUser.name %>" name="name"
+                                                id="">
+                                            <input type="hidden" value="<%= message.message %>" name="userMessage"
+                                                id="">
+                                        </div>
+                                        <div class="btn-p">
+                                            <button style="margin-bottom:20px"
+                                                class="btn btn-success btn-1">ارسال</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+
+
                         </div>
-                        <%- include("../include/notification")  %> 
                     </div>
-                    <!-- /Page Header -->
-                    <div class="contact">
-                    <div class="container col-md-6">
-                        <h1 style="margin-bottom:40px" class="text-center">الرد علي <span style="font-size:20px">(<%= message.contactUsUser.name %>)</span></h1>
-                        <form method="post">
-                        <div class="form-group">
-                            <textarea readonly style="width:100%;min-height:200px"
-                            class="form-control"
-                            placeholder="رساله المرسل"
-                            ><%= message.message %></textarea>
-                            <textarea style="width:100%;min-height:200px"
-                            required
-                            name="message"
-                            class="form-control"
-                            placeholder="الرد"
-                            ></textarea>
-                            <input type="hidden" value="<%= message.contactUsUser.email %>" name="email" id="">
-                            <input type="hidden" value="<%= message.contactUsUser.name %>" name="name" id="">
-                            <input type="hidden" value="<%= message.message %>" name="userMessage" id="">
-                        </div>
-                        <div class="btn-p">
-                            <button style="margin-bottom:20px" class="btn btn-success btn-1">ارسال</button>
-                        </div>
-                        </form>
-                    </div>
-                    </div>
+                    <!-- /Page Wrapper -->
 
 
-                </div>			
-            </div>
-            <!-- /Page Wrapper -->
+                    <%- include("../include/footer_script") %>
 
+                        <!-- Datatables JS -->
 
-        <%- include("../include/footer_script")  %> 
-        		
-		<!-- Datatables JS -->
+                        <script src="/backEnd/assets/plugins/datatables/datatables.min.js"></script>
+                        <script src="/backEnd/assets/js/form-tags.js"></script>
+                        <script src="/backEnd/assets/js/script.js"></script>
 
-		<script src="/backEnd/assets/plugins/datatables/datatables.min.js"></script>
-		<script src="/backEnd/assets/js/form-tags.js"></script>
-        <script  src="/backEnd/assets/js/script.js"></script>
-
-    </head>
-</body>
+                        </head>
+                        </body>
