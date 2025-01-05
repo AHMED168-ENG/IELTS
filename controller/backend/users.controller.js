@@ -25,7 +25,7 @@ const AllUsersController = async (req, res, next) => {
 
 const EditUsersController = async (req, res, next) => {
   try {
-    const user = await User.findOne({_id: req.params.id,});
+    const user = await User.findOne({ _id: req.params.id, });
     res.render("backEnd/users/editUser", {
       title: "edit User",
       URL: req.url,
@@ -95,7 +95,7 @@ const activeUser = async (req, res, next) => {
     returnWithMessage(
       req,
       res,
-      "dashboard/allUsers",
+      "/dashboard/allUsers",
       req.query.isActive == "false"
         ? "تم التفعيل بنجاح"
         : "تم الغاء التفعيل بنجاح",
@@ -113,7 +113,7 @@ const deleteUser = async (req, res, next) => {
     returnWithMessage(
       req,
       res,
-      "dashboard/allUsers",
+      "/dashboard/allUsers",
       "تم الحذف بنجاح",
       "danger"
     );

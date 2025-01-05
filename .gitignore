@@ -4,7 +4,7 @@ node_modules
 test
 # ./public
 # public
-sound
-./sound
-./public/backEnd/assets/sound
-public/backEnd/assets/sound
+# sound
+# ./sound
+# ./public/backEnd/assets/sound
+# public/backEnd/assets/sound

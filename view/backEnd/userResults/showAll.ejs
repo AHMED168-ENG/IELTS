@@ -1,91 +1,114 @@
-<%- include("../include/head")  %> 
-<%- include("../include/aside")  %> 
-<%- include("../include/navePare")  %> 
-<%- include("../include/alert")  %> 
-<style>
-	.testPar {
-		width:250px;
-		overflow: hidden;
-		white-space:nowrap;
-	}
-</style>
-</head>
-    </body>
-        <!-- Main Wrapper -->
-        <div class="main-wrapper">
-            <!-- Page Wrapper -->
-            <div class="page-wrapper">
-                <div class="content container-fluid">
-                    <!-- Page Header -->
-                    <div class="page-header">
-                        <div class="row">
-                            <div class="col-sm-7 col-auto">
-                                <h3 class="page-title">كل الاجابات</h3>
-                                <ul class="breadcrumb">
-                                    <li class="breadcrumb-item"><a href="index.html">لوحه التحكم</a></li>
-                                    <li class="breadcrumb-item active">الاجابات</li>
-                                </ul>
-                            </div>
-                        </div>
-                        <%- include("../include/notification")  %> 
-                    </div>
-                    <!-- /Page Header -->
-                    <div class="row">
-                        <div class="col-sm-12">
-							<div class="card">
-								<div class="card-body">
-									<div class="table-responsive">
-										<table class="datatable table table-hover table-center mb-0">
-											<thead>
-												<tr>
-													<th>اسم المستخدم</th>
-													<th>الاعاقه</th>
-													<th>رقم الاختبار</th>
-													<th>التحكم</th>
-												</tr>
-											</thead>
-											<tbody>
-												<% AllUserResult.forEach(element => { %>
-													<tr>
-														<td>
-															<h2 class="table-avatar">
-																<a style="margin-left:10px" href="/dashboard/EditUsers/<%= element.ResultUser.id %>" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="/backEnd/assets/img/users/<%= element.ResultUser.image ? element.ResultUser.image.split("--")[0] : "avatar.png" %>" alt="training Image "></a>
-																<a href="/dashboard/EditUsers/<%= element.ResultUser.id %>"><p class="testPar"><%= element.ResultUser.name %></p></a>
-															</h2>
-														</td>
-													<td><p class="testPar"><%= element.ResultTesting.TestingDisability.name%></p> </td>
-													<td><p class="testPar"> الاختبار رقم ( <%= element.ResultTesting.numberOfTest%> )</p> </td>
-													
-													<td>
-														<a href="/dashboard/correctResultPage/<%= element.id %>" class="btn btn-success">تصحيح الاجابه</a>
-														<form class="d-inline" method="post" action="dashboard/deleteTraining/<%= element.id %>">
-															<input type="hidden" name="oldImage" id="" value="<%= element.image %>">
-															<input type="hidden" name="oldVideo" id="" value="<%= element.video %>">
-															<button class="btn btn-danger">حذف</button>
-														</form>
+<%- include("../include/head") %>
+	<%- include("../include/aside") %>
+		<%- include("../include/navePare") %>
+			<%- include("../include/alert") %>
+				<style>
+					.testPar {
+						width: 250px;
+						overflow: hidden;
+						white-space: nowrap;
+					}
+				</style>
+				</head>
+				</body>
+				<!-- Main Wrapper -->
+				<div class="main-wrapper">
+					<!-- Page Wrapper -->
+					<div class="page-wrapper">
+						<div class="content container-fluid">
+							<!-- Page Header -->
+							<div class="page-header">
+								<div class="row">
+									<div class="col-sm-7 col-auto">
+										<h3 class="page-title">كل الاجابات</h3>
+										<ul class="breadcrumb">
+											<li class="breadcrumb-item"><a href="index.html">لوحه التحكم</a></li>
+											<li class="breadcrumb-item active">الاجابات</li>
+										</ul>
+									</div>
+								</div>
+								<%- include("../include/notification") %>
+							</div>
+							<!-- /Page Header -->
+							<div class="row">
+								<div class="col-sm-12">
+									<div class="card">
+										<div class="card-body">
+											<div class="table-responsive">
+												<table class="datatable table table-hover table-center mb-0">
+													<thead>
+														<tr>
+															<th>اسم المستخدم</th>
+															<th>الاعاقه</th>
+															<th>رقم الاختبار</th>
+															<th>التحكم</th>
+														</tr>
+													</thead>
+													<tbody>
+														<% AllUserResult.forEach(element=> { %>
+															<tr>
+																<td>
+																	<h2 class="table-avatar">
+																		<a style="margin-left:10px"
+																			href="/dashboard/EditUsers/<%= element.ResultUser.id %>"
+																			class="avatar avatar-sm mr-2"><img
+																				class="avatar-img rounded-circle"
+																				src="/backEnd/assets/img/users/<%= element.ResultUser.image ? element.ResultUser.image.split("
+																				--")[0] : "avatar.png" %>" alt="training
+																			Image "></a>
+																		<a
+																			href="/dashboard/EditUsers/<%= element.ResultUser.id %>">
+																			<p class="testPar">
+																				<%= element.ResultUser.name %>
+																			</p>
+																		</a>
+																	</h2>
+																</td>
+																<td>
+																	<p class="testPar">
+																		<%=
+																			element.ResultTesting.TestingDisability.name%>
+																	</p>
+																</td>
+																<td>
+																	<p class="testPar"> الاختبار رقم ( <%=
+																			element.ResultTesting.numberOfTest%> )</p>
+																</td>
 
-													</td>
-												</tr>
-												<% }) %>
+																<td>
+																	<a href="/dashboard/correctResultPage/<%= element.id %>"
+																		class="btn btn-success">تصحيح الاجابه</a>
+																	<form class="d-inline" method="post"
+																		action="/dashboard/deleteTraining/<%= element.id %>">
+																		<input type="hidden" name="oldImage" id=""
+																			value="<%= element.image %>">
+																		<input type="hidden" name="oldVideo" id=""
+																			value="<%= element.video %>">
+																		<button class="btn btn-danger">حذف</button>
+																	</form>
 
-											</tbody>
-										</table>
+																</td>
+															</tr>
+															<% }) %>
+
+													</tbody>
+												</table>
+											</div>
+										</div>
 									</div>
 								</div>
 							</div>
-						</div>	
-                    </div>
-                </div>			
-            </div>
-            <!-- /Page Wrapper -->
+						</div>
+					</div>
+					<!-- /Page Wrapper -->
 
 
-        <%- include("../include/footer_script")  %> 
-        		
-		<!-- Datatables JS -->
-		<script src="/backEnd/assets/plugins/datatables/jquery.dataTables.min.js"></script>
-		<script src="/backEnd/assets/plugins/datatables/datatables.min.js"></script>
-        <script  src="/backEnd/assets/js/script.js"></script>
+					<%- include("../include/footer_script") %>
 
-    </head>
-</body>
+						<!-- Datatables JS -->
+						<script src="/backEnd/assets/plugins/datatables/jquery.dataTables.min.js"></script>
+						<script src="/backEnd/assets/plugins/datatables/datatables.min.js"></script>
+						<script src="/backEnd/assets/js/script.js"></script>
+
+						</head>
+						</body>
