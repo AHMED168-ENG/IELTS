@@ -106,9 +106,8 @@ const signUpUserPost = async (req, res, next) => {
     req.body.password = Password;
     req.body.image = file;
     req.body.gender = req.body.gender == "1" ? true : false;
-    req.body.isDoctor = false;
     req.body.isAdmin = false;
-    req.body.active = false;
+    req.body.active = true;
 
     await UserModel.create(req.body).then((result) => {
       // sendEmail(

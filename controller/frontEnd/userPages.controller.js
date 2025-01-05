@@ -185,16 +185,16 @@ const enterExam = async (req, res, next) => {
             },
         });
 
-        if (existingEntry) {
-            returnWithMessage(
-                req,
-                res,
-                "/allTesting",
-                "لقد قمت بدخول هذا الامتحان اليوم. الرجاء المحاولة غداً.",
-                "danger"
-            );
-            return;
-        }
+        // if (existingEntry) {
+        //     returnWithMessage(
+        //         req,
+        //         res,
+        //         "/allTesting",
+        //         "لقد قمت بدخول هذا الامتحان اليوم. الرجاء المحاولة غداً.",
+        //         "danger"
+        //     );
+        //     return;
+        // }
 
         // If the user has not entered today, allow them to proceed
 
