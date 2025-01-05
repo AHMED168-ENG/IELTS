@@ -1,0 +1,10 @@
+node_modules
+/node_modules
+./test
+test
+# ./public
+# public
+sound
+./sound
+./public/backEnd/assets/sound
+public/backEnd/assets/sound
