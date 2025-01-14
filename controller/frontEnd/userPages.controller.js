@@ -523,7 +523,7 @@ const EditPersonalInformationPost = async (req, res, nest) => {
             req,
             res,
             "/editPersonalInformation",
-            "تم تعديل بياناتك بنجاح قم بتسجيل الدخول مره اخري",
+            "Your data has been modified successfully. Please log in again.",
             "success"
         );
     } catch (error) {

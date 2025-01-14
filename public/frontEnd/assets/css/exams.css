@@ -1,0 +1,74 @@
+body {
+  font-family: Arial, sans-serif;
+  /* background: linear-gradient(135deg, #c7c5f4, #776bcc); */
+  margin: 0;
+  padding: 0;
+}
+.exams h1 {
+  color: #fff;
+  font-size: 36px;
+  text-align: center;
+  margin-bottom: 30px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  background: linear-gradient(90deg, #776bcc, #4c489d);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: bold;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+.exams {
+  padding: 50px 0;
+  min-height: 70vh;
+}
+
+.exams h1 {
+  color: #fff;
+  font-size: 36px;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.exams .row {
+  display: flex;
+  flex-wrap: wrap;
+  /* justify-content: center; */
+  gap: 20px;
+}
+
+.exams .row a {
+  text-decoration: none;
+}
+
+.exams .row a .box {
+  background: #fff;
+  padding: 20px;
+  border-radius: 15px;
+  transition: 0.3s;
+  border: 1px solid #ddd;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.exams .row a .box:hover {
+  box-shadow: 0 8px 15px rgba(119, 107, 204, 0.3);
+  transform: translateY(-5px);
+  border-color: #776bcc;
+}
+
+.exams .row a .box h2 {
+  font-size: 24px;
+  color: #776bcc;
+  margin-bottom: 10px;
+  text-transform: capitalize;
+}
+
+.exams .row a .box p {
+  font-size: 16px;
+  color: #555;
+  margin-bottom: 5px;
+}
+
+.exams .row a .box p strong {
+  color: #776bcc;
+}

@@ -16,7 +16,7 @@ const AllTestingController = async (req, res, next) => {
             title: "All Testing",
             URL: req.url,
             notification: req.flash("notification")[0],
-            admin: req.cookies.Admin,
+            admin: req.cookies.User,
             Testing: testing,
         });
     } catch (error) {
@@ -32,7 +32,7 @@ const addTestingController = async (req, res, next) => {
             URL: req.url,
             notification: req.flash("notification")[0],
             validationError: req.flash("validationError")[0],
-            admin: req.cookies.Admin,
+            admin: req.cookies.User,
             sections,
         });
     } catch (error) {
@@ -47,12 +47,12 @@ const addTestingControllerPost = async (req, res) => {
         const newExam = await Testing.create({ name: examName, type: examType, shuffle: shuffle == "true" });
         if (questions && typeof questions === 'object' && Object.keys(questions).length > 0) {
             const sectionPromises = Object.entries(questions).map(async ([sectionId, sectionQuestions]) => {
-                const questionPromises = sectionQuestions.map(async (questionData , index) => {
+                const questionPromises = sectionQuestions.map(async (questionData, index) => {
                     return await Question.create({
                         ...questionData,
                         section: sectionId,
                         exam: newExam._id,
-                        order : index
+                        order: index
                     });
                 });
                 return await Promise.all(questionPromises);
@@ -92,10 +92,10 @@ const EditTestingController = async (req, res, next) => {
                     localField: "_id",
                     foreignField: "exam",
                     as: "questions",
-                    pipeline : [
+                    pipeline: [
                         {
-                            $sort : {
-                                order : 1
+                            $sort: {
+                                order: 1
                             }
                         }
                     ]
@@ -119,9 +119,9 @@ const EditTestingController = async (req, res, next) => {
             title: "edit Testing",
             URL: req.url,
             notification: req.flash("notification")[0],
-            admin: req.cookies.Admin,
-            Testing : examData[0],
-            sections : sections,
+            admin: req.cookies.User,
+            Testing: examData[0],
+            sections: sections,
             validationError: req.flash("validationError")[0],
         });
     } catch (error) {
@@ -152,7 +152,7 @@ const EditTestingControllerPost = async (req, res) => {
         const deleteQuestionsPromises = oldQuestions.map(question => Question.findByIdAndDelete(question._id));
         await Promise.all(deleteQuestionsPromises);
 
-        await Testing.updateOne({_id : examId} , {
+        await Testing.updateOne({ _id: examId }, {
             name: examName,
             type: examType,
             shuffle: shuffle === "true",
@@ -160,11 +160,11 @@ const EditTestingControllerPost = async (req, res) => {
 
         if (questions && typeof questions === 'object') {
             const sectionPromises = Object.entries(questions).map(([sectionId, sectionQuestions]) =>
-                Question.insertMany(sectionQuestions.map((questionData , index) => ({
+                Question.insertMany(sectionQuestions.map((questionData, index) => ({
                     ...questionData,
                     section: sectionId,
                     exam: examId,
-                    order : index
+                    order: index
                 })))
             );
             await Promise.all(sectionPromises);

@@ -15,8 +15,11 @@ const signUpUserValidation = () => {
       .withMessage("ادخل الايميل صحيح")
       .custom(async (value, { req }) => {
         let query = { email: value }
-        if (req.cookies.User._id) query._id = { $ne: new mongoose.Types.ObjectId(req.cookies.User._id) }
+        console.log(req.cookies.User)
+
+        if (req.cookies.User && req.cookies.User._id) query._id = { $ne: new mongoose.Types.ObjectId(req.cookies.User._id) }
         var user = await User.findOne(query);
+        console.log(user)
         if (user) {
           throw new Error();
         }

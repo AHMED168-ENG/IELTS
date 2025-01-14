@@ -15,7 +15,7 @@ const AllUsersController = async (req, res, next) => {
       title: "All Users",
       URL: req.url,
       notification: req.flash("notification")[0],
-      admin: req.cookies.Admin,
+      admin: req.cookies.User,
       users: users,
     });
   } catch (error) {
@@ -30,7 +30,7 @@ const EditUsersController = async (req, res, next) => {
       title: "edit User",
       URL: req.url,
       notification: req.flash("notification")[0],
-      admin: req.cookies.Admin,
+      admin: req.cookies.User,
       user: user,
       validationError: req.flash("validationError")[0],
     });

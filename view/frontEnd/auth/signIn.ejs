@@ -1,50 +1,63 @@
-<%- include("../include/head.ejs") %> <%- include("../include/navebar.ejs") %>
+<%- include("../include/head.ejs") %>
+  <link rel="stylesheet" href="/frontEnd/assets/css/auth/signin.css" />
+  <%- include("../include/notification.ejs") %>
 
-<style>
-  .login form {
-    box-shadow: none;
-    border: 1px solid #ccc;
-    background-color: #eee;
-  }
-  .login h3 {
-    color: #117a8b;
-    margin-bottom: 25px;
-  }
-</style>
-<%- include("../include/notification.ejs") %>
+    <div class="container">
+      <div class="screen">
+        <div class="screen__content">
+          <form class="login" method="post">
+            <div class="login__field">
+              <i class="login__icon fas fa-user"></i>
+              <input type="text" name="email" class="login__input" placeholder="User name / Email">
+              <% if (validationError) { %>
+                <% if (validationError.email) { %>
+                  <span class="text-danger">
+                    <%=validationError.email[0].msg %>
+                  </span>
+                  <% } %>
+                    <% } %>
+            </div>
+            <div class="login__field">
+              <i class="login__icon fas fa-lock"></i>
+              <input type="password" name="password" class="login__input" placeholder="Password">
+              <% if (validationError) { %>
+                <% if (validationError.password) { %>
+                  <span class="text-danger">
+                    <%=validationError.password[0].msg %>
+                  </span>
+                  <% } %>
+                    <% } %>
+            </div>
+            <div class="form-check">
+              <input class="" type="checkbox" checked name="rememberMe" value="1" id="form1Example3" />
+              <label class="form-check-label" for="form1Example3"> Remember Me </label>
+            </div>
+            <button class="button login__submit">
+              <span class="button__text">Log In Now</span>
+              <i class="button__icon fas fa-chevron-right"></i>
+            </button>
+            <a href="/signup" style="margin-top: 10px !important;" class="login__submit">Register</a>
 
-<div class="login">
-  <div class="container">
-    <form class="col-md-7 mx-auto" method="post">
-      <h3 class="text-center">Join Us</h3>
-      <div class="form-group">
-        <label for="email">Email</label>
-        <input type="text" name="email" class="form-control" />
-        <% if (validationError) { %> <% if (validationError.email) { %>
-        <span class="text-danger"><%=validationError.email[0].msg %></span>
-        <% } %> <% } %>
+          </form>
+          <div class="social-login">
+            <h3>log in via</h3>
+            <div class="social-icons">
+              <a href="#" class="social-login__icon fab fa-instagram"></a>
+              <a href="#" class="social-login__icon fab fa-facebook"></a>
+              <a href="#" class="social-login__icon fab fa-twitter"></a>
+            </div>
+          </div>
+
+        </div>
+        <div class="screen__background">
+          <span class="screen__background__shape screen__background__shape4"></span>
+          <span class="screen__background__shape screen__background__shape3"></span>
+          <span class="screen__background__shape screen__background__shape2"></span>
+          <span class="screen__background__shape screen__background__shape1"></span>
+        </div>
       </div>
-      <div class="form-group">
-        <label for="password">Password</label>
-        <input type="password" name="password" class="form-control" />
-        <% if (validationError) { %> <% if (validationError.password) { %>
-        <span class="text-danger"><%=validationError.password[0].msg %></span>
-        <% } %> <% } %>
-      </div>
-      <div class="form-check">
-        <input
-          class=""
-          type="checkbox"
-          checked
-          name="rememberMe"
-          value="1"
-          id="form1Example3"
-        />
-        <label class="form-check-label" for="form1Example3"> Remember Me </label>
-      </div>
-      <button class="btn w-50 mx-auto d-block text-center">Login</button>
-    </form>
-  </div>
-</div>
-<%- include("../include/footer.ejs") %> <%-
-include("../include/footerScript.ejs") %>
+    </div>
+
+
+
+    <%- include("../include/footerScript.ejs") %>

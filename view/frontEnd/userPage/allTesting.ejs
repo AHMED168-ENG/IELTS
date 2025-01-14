@@ -1,73 +1,39 @@
-<%- include("../include/head.ejs") %> <%- include("../include/navebar.ejs") %>
-<%- include("../include/notification.ejs") %> <style></style>
-<style>
-  .exams {
-    height: 57vh;
-  }
-  .exams .row a {
-    text-decoration: none;
-  }
-  .exams .row a .box {
-    background: #eee;
-    padding: 10px 15px;
-    border-radius: 15px;
-    transition: 0.5s;
-    border: 1px solid #ddd;
-  }
-  .exams .row a .box h2 span:last-of-type {
-    color: #555;
-    font-size: 22px !important;
-  }
-  .exams .row a .box:hover {
-    box-shadow: 10px 10px 15px rgba(212, 0, 255, 0.2);
-  }
-  
-</style>
-<link rel="stylesheet" href="/frontEnd/assets/css/select.css" />
+<link rel="stylesheet" href="/frontEnd/assets/css/exams.css" />
+<%- include("../include/head.ejs") %>
+  <%- include("../include/navebar.ejs") %>
+    <%- include("../include/notification.ejs") %>
 
-<div class="exams py-5">
-  <div class="container">
-    <h1 class="text-center mb-4">All Exams</h1>
-    <div class="row gy-4">
-      <% allTesting.forEach((element , i) => { %>
-      <div class="col-md-6 col-lg-4">
-        <a href="/enterExam/<%= element.id %>" class="exam-card d-block  text-decoration-none shadow-sm">
-          <div class="box rounded p-4 text-center bg-light">
-            <h2 class="text-primary mb-3" style="text-transform: capitalize;">
-              <%= element.name %>
-            </h2>
-            <p class="text-muted mb-2">
-              <strong>Code:</strong> <%= element.code %>
-            </p>
-            <p class="text-secondary">
-              <strong>Type:</strong> <%= element.type %>
-            </p>
+
+      <div class="exams py-5">
+        <div class="container">
+          <h1>All Exams</h1>
+          <div class="row">
+            <% allTesting.forEach((element, i)=> { %>
+              <div class="col-md-6 col-lg-4">
+                <a href="/enterExam/<%= element.id %>" class="exam-card">
+                  <div class="box">
+                    <h2>
+                      <%= element.name %>
+                    </h2>
+                    <p>
+                      <strong>Code:</strong>
+                      <%= element.code %>
+                    </p>
+                    <p>
+                      <strong>Type:</strong>
+                      <%= element.type %>
+                    </p>
+                  </div>
+                </a>
+              </div>
+              <% }) %>
           </div>
-        </a>
+        </div>
       </div>
-      <% }) %>
-    </div>
-  </div>
-</div>
 
-
-<%- include("../include/footer.ejs") %> <%-
-include("../include/footerScript.ejs") %>
-<script src="/frontEnd/assets/js/main.js"></script>
-<script
-  src="/frontEnd/assets/js/vendors.min.js"
-  type="text/javascript"
-></script>
-<!-- BEGIN VENDOR JS-->
-<!-- BEGIN PAGE VENDOR JS-->
-<script
-  src="/frontEnd/assets/js/select2.full.min.js"
-  type="text/javascript"
-></script>
-<!-- END PAGE VENDOR JS-->
-
-<!-- BEGIN PAGE LEVEL JS-->
-<script
-  src="/frontEnd/assets/js/form-select2.js"
-  type="text/javascript"
-></script>
+      <%- include("../include/footer.ejs") %>
+        <%- include("../include/footerScript.ejs") %>
+          <script src="/frontEnd/assets/js/main.js"></script>
+          <script src="/frontEnd/assets/js/vendors.min.js" type="text/javascript"></script>
+          <script src="/frontEnd/assets/js/select2.full.min.js" type="text/javascript"></script>
+          <script src="/frontEnd/assets/js/form-select2.js" type="text/javascript"></script>

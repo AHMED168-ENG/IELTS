@@ -1,125 +1,81 @@
-<%- include("../include/head.ejs") %> <%- include("../include/navebar.ejs") %>
-<%- include("../include/notification.ejs") %> <style></style>
-<link rel="stylesheet" href="/frontEnd/assets/css/select.css" />
-<style> 
-  form{
-    position:relative;
-  }
-  form .image {
-    position: absolute;
-    left:50%;
-    transform: translate(-50% , -50%);
-    width:90px;
-    height:90px;
-    border-radius: 50%;
-    overflow: hidden;
-    padding:4px;
-    box-shadow: 5px 5px 10px rgba(0,0,0,0.1);
-    top:0
-  }
-  form .image img {
-    width:100%;
-    height:100%;
-  }
-  form .image input {
-    position: absolute;
-    left:0;
-    z-index: 5;
-    width:100%;
-    height:100%;
-    opacity: 0;
-    cursor: pointer;
-  }
-</style>
-<div class="register">
-  <div class="container">
-    <form
-      class="col-md-7 mx-auto"
-      method="post"
-      action=""
-      enctype="multipart/form-data"
-    >
-    <input type="hidden" value="<%= user.password %>" name="password" id="">
-    <input type="hidden" value="<%= user.image %>" name="oldImage" id="">
-    <div class="image">
-      <input type="file" name="image">
-      <img src="/backEnd/assets/img/users/<%= user.image.split("--")[0] %>" alt="">
-    </div>
-      <h3 class="text-center">Edit Personal Data</h3>
-      <div class="form-group">
-        <label for="name"></label>
-        <input
-          type="text"
-          value="<%= user.name%>"
-          name="name"
-          class="form-control"
-        />
-        <% if (validationError) { %> <% if (validationError.name) { %>
-        <span class="text-danger"><%=validationError.name[0].msg %> </span>
-        <% } %> <% } %>
-      </div>
-      <div class="form-group">
-        <label for="email">Email</label>
-        <input
-          type="text"
-          value="<%= user.email%>"
-          name="email"
-          class="form-control"
-        />
-        <% if (validationError) { %> <% if (validationError.email) { %>
-        <span class="text-danger"><%=validationError.email[0].msg %></span>
-        <% } %> <% } %>
+<%- include("../include/head.ejs") %>
+  <%- include("../include/navebar.ejs") %>
+    <%- include("../include/notification.ejs") %>
+      <link rel="stylesheet" href="/frontEnd/assets/css/select.css" />
+      <link rel="stylesheet" href="/frontEnd/assets/css/editPersonnelData.css" />
+
+      <div class="register">
+        <div class="container">
+          <form method="post" action="" enctype="multipart/form-data">
+            <input type="hidden" value="<%= user.password %>" name="password">
+            <input type="hidden" value="<%= user.image %>" name="oldImage">
+
+            <div class="image">
+              <input type="file" name="image">
+              <img src="/backEnd/assets/img/users/<%= user.image.split('--')[0] %>" alt="">
+            </div>
+
+            <h3>Edit Personal Data</h3>
+
+            <div class="form-group">
+              <label for="name">Name</label>
+              <input type="text" value="<%= user.name %>" name="name" class="form-control" />
+              <% if (validationError && validationError.name) { %>
+                <span class="text-danger">
+                  <%= validationError.name[0].msg %>
+                </span>
+                <% } %>
+            </div>
+
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input type="text" value="<%= user.email %>" name="email" class="form-control" />
+              <% if (validationError && validationError.email) { %>
+                <span class="text-danger">
+                  <%= validationError.email[0].msg %>
+                </span>
+                <% } %>
+            </div>
+
+            <div class="form-group">
+              <label for="age">Age</label>
+              <input type="number" value="<%= user.age %>" name="age" class="form-control" />
+              <% if (validationError && validationError.age) { %>
+                <span class="text-danger">
+                  <%= validationError.age[0].msg %>
+                </span>
+                <% } %>
+            </div>
+
+            <div class="form-group">
+              <label for="gender">Gender</label>
+              <select class="form-control" name="gender">
+                <option value="1" <%=user.gender ? "selected" : "" %>>Male</option>
+                <option value="0" <%=!user.gender ? "selected" : "" %>>Female</option>
+              </select>
+              <% if (validationError && validationError.gender) { %>
+                <span class="text-danger">
+                  <%= validationError.gender[0].msg %>
+                </span>
+                <% } %>
+            </div>
+
+            <input type="hidden" value="<%= user.id %>" name="userId">
+
+            <% if (validationError && validationError.image) { %>
+              <span class="text-danger">
+                <%= validationError.image[0].msg %>
+              </span>
+              <% } %>
+
+                <button class="btn">Update</button>
+          </form>
+        </div>
       </div>
 
-      <div class="form-group">
-        <label for="age">Age</label>
-        <input
-          type="number"
-          value="<%= user.age%>"
-          name="age"
-          class="form-control"
-        />
-        <% if (validationError) { %> <% if (validationError.age) { %>
-        <span class="text-danger"><%=validationError.age[0].msg %></span>
-        <% } %> <% } %>
-      </div>
-      <div class="form-group">
-        <label for="gender">Gender</label>
-        <select class="form-control" name="gender">
-          <option value="1" <%= user.gender ? "selected" : "" %> >male</option>
-          <option value="0" <%= !user.gender ? "selected" : "" %>>female</option>
-        </select>
-        <% if (validationError) { %> <% if (validationError.gender) { %>
-        <span class="text-danger"><%=validationError.gender[0].msg %></span>
-        <% } %> <% } %>
-      </div>
-      <input type="hidden" value="<%= user.id %>" name="userId">
-
-      <% if (validationError) { %> <% if (validationError.image) { %>
-          <span class="text-danger"><%=validationError.image[0].msg %></span>
-          <% } %> <% } %>
-      <button class="btn w-50 mx-auto d-block">Edit</button>
-    </form>
-  </div>
-</div>
-
-<%- include("../include/footer.ejs") %> <%-
-include("../include/footerScript.ejs") %>
-<script src="/frontEnd/assets/js/main.js"></script>
-<script
-  src="/frontEnd/assets/js/vendors.min.js"
-  type="text/javascript"
-></script>
-<!-- BEGIN VENDOR JS-->
-<!-- BEGIN PAGE VENDOR JS-->
-<script
-  src="/frontEnd/assets/js/select2.full.min.js"
-  type="text/javascript"
-></script>
-<!-- END PAGE VENDOR JS-->
-
-<!-- BEGIN PAGE LEVEL JS-->
-<script
-  src="/frontEnd/assets/js/form-select2.js"
-  type="text/javascript"
-></script>
+      <%- include("../include/footer.ejs") %>
+        <%- include("../include/footerScript.ejs") %>
+          <script src="/frontEnd/assets/js/main.js"></script>
+          <script src="/frontEnd/assets/js/vendors.min.js" type="text/javascript"></script>
+          <script src="/frontEnd/assets/js/select2.full.min.js" type="text/javascript"></script>
+          <script src="/frontEnd/assets/js/form-select2.js" type="text/javascript"></script>

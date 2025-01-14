@@ -40,7 +40,7 @@ const signInAdmin = async (req, res, next) => {
                 var message = req.body.rememberMe
                     ? "تم تسجيل الدخول بنجاح"
                     : "تم تسجيل الدخول بنجاح " +
-                      "سوف يتم تسجيل خروجك من الموقع بعد 24 ساعه من دخولك";
+                    "سوف يتم تسجيل خروجك من الموقع بعد 24 ساعه من دخولك";
                 res.cookie("Admin", user, expire);
                 returnWithMessage(req, res, "/dashboard", message, "success");
             } else {
@@ -69,9 +69,9 @@ const signInAdmin = async (req, res, next) => {
 /*-----------------------------------  ------------------------------*/
 const signOutAdmin = async (req, res, next) => {
     try {
-        res.clearCookie("Admin");
-        res.redirect("/dashboard/signIn");
-    } catch (error) {}
+        res.clearCookie("User");
+        res.redirect("/signin");
+    } catch (error) { }
 };
 /*----------------------------------- start sign Out ------------------------------*/
 

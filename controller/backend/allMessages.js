@@ -5,17 +5,17 @@ const { sendEmail } = require("../../emails/sendEmails");
 const AllMessageController = async (req, res, next) => {
   try {
     const Message = await ContactUsModel.find()
-    .populate({
-      path: 'userId', // مرجع إلى users
-      model: 'User',
-      as: 'contactUsUser',
-    });
+      .populate({
+        path: 'userId', // مرجع إلى users
+        model: 'User',
+        as: 'contactUsUser',
+      });
 
     res.render("backEnd/Message/showAll", {
       title: "All Message",
       URL: req.url,
       notification: req.flash("notification")[0],
-      admin: req.cookies.Admin,
+      admin: req.cookies.User,
       Message: Message,
     });
   } catch (error) {
@@ -26,18 +26,18 @@ const AllMessageController = async (req, res, next) => {
 const responsMessage = async (req, res, next) => {
   try {
     const message = await ContactUsModel.findById(req.params.id)
-    .populate({
-      path: 'userId', // مرجع إلى users
-      model: 'User',
-      as: 'contactUsUser',
-    });
+      .populate({
+        path: 'userId', // مرجع إلى users
+        model: 'User',
+        as: 'contactUsUser',
+      });
 
 
     res.render("backEnd/Message/responsMessage", {
       title: "All Message",
       URL: req.url,
       notification: req.flash("notification")[0],
-      admin: req.cookies.Admin,
+      admin: req.cookies.User,
       message,
     });
   } catch (error) {

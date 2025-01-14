@@ -13,10 +13,10 @@ const dashboard_page_controller = async (req, res, next) => {
             title: "dashboard",
             URL: req.url,
             users,
-            Testing :testing,
+            Testing: testing,
             training,
             notification: req.flash("notification")[0],
-            admin: req.cookies.Admin,
+            admin: req.cookies.User,
         });
     } catch (error) {
         tryError(res, error);

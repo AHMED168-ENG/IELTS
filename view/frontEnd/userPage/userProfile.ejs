@@ -1,150 +1,83 @@
-<%- include("../include/head.ejs") %> <%- include("../include/navebar.ejs") %>
-<%- include("../include/notification.ejs") %>
-<style>
-  .profile .left {
-    overflow: hidden;
-    box-shadow: 7px 7px 15px rgba(0, 0, 0, 0.1);
-    border: 1px solid #ccc;
-  }
-  .profile .right .image img {
-    padding: 5px;
-    background: #eee;
-    border: 1px solid #ccc !important;
-  }
-  .profile .left .nav {
-    padding: 20px 0;
-    display: flex;
-    justify-content: space-around;
-    background: #ddd;
-  }
-  .profile .left .nav a {
-    width: 40%;
-  }
-  .tab-content h6 {
-    background: #eee;
-    padding: 6px;
-    border: 1px solid #ddd;
-  }
-</style>
-<div class="profile">
-  <div class="container">
-    <h1 class="text-center">Personal Page</h1>
-    <div class="row" style="height: 50vh;">
-      <div class="col-md-6">
-        <div class="right">
-          <div class="image">
-            <img src="/backEnd/assets/img/users/<%= user.image.split("--")[0]
-            %>" alt="User picture" />
-          </div>
-          <div class="text">
-            <h3>Name: <span><%= user.name %></span></h3>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-6">
-        <div class="left">
-          <div
-            class="nav flex-row nav-pills"
-            id="v-pills-tab"
-            role="tablist"
-            aria-orientation="vertical"
-          >
-            <a
-              class="nav-item active"
-              id="v-pills-home-tab"
-              data-toggle="pill"
-              href="#v-pills-home"
-              role="tab"
-              aria-controls="v-pills-home"
-              aria-selected="true"
-              >Personal Information</a
-            >
-            <a
-              class="nav-item"
-              id="v-pills-profile-tab"
-              data-toggle="pill"
-              href="#v-pills-profile"
-              role="tab"
-              aria-controls="v-pills-profile"
-              aria-selected="false"
-              >Change Password</a
-            >
+<link rel="stylesheet" href="/frontEnd/assets/css/personnelData.css" />
+
+<%- include("../include/head.ejs") %>
+  <%- include("../include/navebar.ejs") %>
+    <%- include("../include/notification.ejs") %>
+
+
+      <div class="profile">
+        <div class="container">
+          <div class="header">
+            <h1>Personal Page</h1>
           </div>
 
-          <div class="tab-content" id="v-pills-tabContent">
-            <div
-              class="tab-pane fade show active"
-              id="v-pills-home"
-              role="tabpanel"
-              aria-labelledby="v-pills-home-tab"
-            >
-              <h6>Name :<span><%= user.name %></span></h6>
-              <h6>Email :<span><%= user.email %></span></h6>
+          <div class="row">
+            <div class="col-md-6 right">
+              <div class="image">
+                <img src="/backEnd/assets/img/users/<%= user.image.split(`--`)[0] %>" alt="User picture" />
+              </div>
+              <div class="text">
+                <h3>Name: <span>
+                    <%= user.name %>
+                  </span></h3>
+              </div>
             </div>
-            <a class="btn btn-primary" href="/editPersonalInformation"
-              >Edit Personal Data</a
-            >
-            <div
-              class="tab-pane fade"
-              id="v-pills-profile"
-              role="tabpanel"
-              aria-labelledby="v-pills-profile-tab"
-            >
-              <form action="changePassword" method="post">
-                <div class="form-group">
-                  <input
-                    type="password"
-                    placeholder="Current Password"
-                    class="form-control"
-                    name="password"
-                  />
-                  <% if (validationError) { %> <% if (validationError.password)
-                  { %>
-                  <span class="text-danger"
-                    ><%=validationError.password[0].msg %></span
-                  >
-                  <% } %> <% } %>
+
+            <div class="col-md-6 left">
+              <div class="nav" id="v-pills-tab">
+                <a class="nav-item active" id="v-pills-home-tab" data-toggle="pill" href="#v-pills-home">Personal
+                  Information</a>
+                <a class="nav-item" id="v-pills-profile-tab" data-toggle="pill" href="#v-pills-profile">Change
+                  Password</a>
+              </div>
+
+              <div class="tab-content">
+                <div class="tab-pane fade show active" id="v-pills-home">
+                  <h6>Name: <span>
+                      <%= user.name %>
+                    </span></h6>
+                  <h6>Email: <span>
+                      <%= user.email %>
+                    </span></h6>
+                  <a class="btn-primary" href="/editPersonalInformation">Edit Personal Data</a>
                 </div>
-                <div class="form-group">
-                  <input
-                    type="password"
-                    placeholder="New password"
-                    class="form-control"
-                    name="newPassword"
-                  />
-                  <% if (validationError) { %> <% if
-                  (validationError.newPassword) { %>
-                  <span class="text-danger"
-                    ><%=validationError.newPassword[0].msg %></span
-                  >
-                  <% } %> <% } %>
+
+                <div class="tab-pane fade" id="v-pills-profile">
+                  <form action="changePassword" method="post">
+                    <div class="form-group">
+                      <input type="password" placeholder="Current Password" class="form-control" name="password" />
+                      <% if (validationError && validationError.password) { %>
+                        <span class="text-danger">
+                          <%= validationError.password[0].msg %>
+                        </span>
+                        <% } %>
+                    </div>
+                    <div class="form-group">
+                      <input type="password" placeholder="New Password" class="form-control" name="newPassword" />
+                      <% if (validationError && validationError.newPassword) { %>
+                        <span class="text-danger">
+                          <%= validationError.newPassword[0].msg %>
+                        </span>
+                        <% } %>
+                    </div>
+                    <div class="form-group">
+                      <input type="password" placeholder="Confirm New Password" class="form-control"
+                        name="confirmPassword" />
+                      <% if (validationError && validationError.confirmPassword) { %>
+                        <span class="text-danger">
+                          <%= validationError.confirmPassword[0].msg %>
+                        </span>
+                        <% } %>
+                    </div>
+                    <button class="btn-1">Change</button>
+                  </form>
                 </div>
-                <div class="form-group">
-                  <input
-                    type="password"
-                    placeholder="Confirm new password"
-                    class="form-control"
-                    name="confirmPassword"
-                  />
-                  <% if (validationError) { %> <% if
-                  (validationError.confirmPassword) { %>
-                  <span class="text-danger"
-                    ><%=validationError.confirmPassword[0].msg %></span
-                  >
-                  <% } %> <% } %>
-                </div>
-                <div class="btn-p">
-                  <button class="btn btn-1">Changing</button>
-                </div>
-              </form>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-  </div>
-</div>
 
-<%- include("../include/footer.ejs") %> <%-
-include("../include/footerScript.ejs") %>
-<script src="/frontEnd/assets/js/main.js"></script>
+      <%- include("../include/footer.ejs") %>
+        <%- include("../include/footerScript.ejs") %>
+          <script src="/frontEnd/assets/js/main.js"></script>

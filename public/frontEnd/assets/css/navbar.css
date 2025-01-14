@@ -1,0 +1,60 @@
+.navbar {
+  background-color: #6c63ac;
+  box-shadow: 8px 8px 15px rgba(0, 0, 0, 0.15);
+}
+
+.navbar .collapse ul li a {
+  color: #fff;
+  padding: 5px !important;
+  position: relative;
+  transition: 0.3s;
+  font-size: 16px;
+}
+
+.navbar .collapse ul li a::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  height: 1.6px;
+  background-color: #495057;
+  width: 0;
+  transition: 0.3s;
+}
+
+.navbar .collapse ul li a:hover::after,
+.navbar .collapse ul li a.active::after {
+  width: 100%;
+}
+
+.navbar .collapse ul li a:hover,
+.navbar .collapse ul li a.active {
+  color: #495057 !important;
+}
+
+.navbar .collapse ul li {
+  padding: 0px 10px;
+}
+
+.navbar .collapse .btn-parent a:first-of-type,
+.navbar .collapse .btn-parent a:last-of-type:hover {
+  background-color: #495057;
+  border: 1px solid transparent;
+  color: white !important;
+}
+
+.navbar .collapse .btn-parent a:first-of-type:hover {
+  font-weight: 600;
+}
+
+.navbar .collapse .btn-parent a:last-of-type,
+.navbar .collapse .btn-parent a:first-of-type:hover {
+  border-color: #495057;
+  color: #495057 !important;
+  background-color: transparent;
+}
+
+.navbar .collapse .btn-parent a:last-of-type:hover {
+  border-color: #495057;
+  color: #495057;
+}

@@ -14,7 +14,7 @@ const AllSectionController = async (req, res, next) => {
             URL: req.url,
             notification: req.flash("notification")[0],
             validationError: req.flash("validationError")[0],
-            admin: req.cookies.Admin,
+            admin: req.cookies.User,
             sections,
         });
     } catch (error) {
@@ -30,7 +30,7 @@ const addSectionController = async (req, res, next) => {
             URL: req.url,
             notification: req.flash("notification")[0],
             validationError: req.flash("validationError")[0],
-            admin: req.cookies.Admin,
+            admin: req.cookies.User,
             sections,
         });
     } catch (error) {
@@ -46,7 +46,7 @@ const EditSectionController = async (req, res, next) => {
             URL: req.url,
             notification: req.flash("notification")[0],
             validationError: req.flash("validationError")[0],
-            admin: req.cookies.Admin,
+            admin: req.cookies.User,
             section,
         });
     } catch (error) {

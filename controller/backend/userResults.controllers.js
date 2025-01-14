@@ -25,7 +25,7 @@ const showAllUserResult = async (req, res, next) => {
       title: "all User result",
       URL: req.url,
       notification: req.flash("notification")[0],
-      admin: req.cookies.Admin,
+      admin: req.cookies.User,
       AllUserResult,
       validationError: req.flash("validationError")[0],
     });
@@ -57,7 +57,7 @@ const correctResultPage = async (req, res, next) => {
       title: "correct Result",
       URL: req.url,
       notification: req.flash("notification")[0],
-      admin: req.cookies.Admin,
+      admin: req.cookies.User,
       UserResult,
       validationError: req.flash("validationError")[0],
       correctResultPage,
