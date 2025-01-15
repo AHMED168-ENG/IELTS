@@ -32,8 +32,7 @@ body {
 .exams .row {
   display: flex;
   flex-wrap: wrap;
-  /* justify-content: center; */
-  gap: 20px;
+  row-gap: 20px;
 }
 
 .exams .row a {

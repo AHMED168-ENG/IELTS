@@ -11,7 +11,7 @@ const { default: mongoose } = require("mongoose");
 
 const AllTestingController = async (req, res, next) => {
     try {
-        const testing = await Testing.find()
+        const testing = await Testing.find().sort({ "createdAt": -1 })
         res.render("backEnd/testing/showAll", {
             title: "All Testing",
             URL: req.url,

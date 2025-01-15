@@ -8,92 +8,9 @@
 	<link rel="stylesheet" href="/frontEnd/assets/plugins/dropzone/dropzone.min.css" />
 	<link href="/backEnd/assets/Tagging-System-Autocomplete-Amsify-Suggestags/css/amsify.suggestags.css"
 		rel="stylesheet">
+	<link href="/backEnd/assets/css/exam/addTest.css" rel="stylesheet">
 	<!-- Main CSS -->
-	<style>
-		body {
-			background-color: #f8f9fa;
-		}
 
-		.audio-controls {
-			display: flex;
-			align-items: center;
-			justify-content: right;
-			column-gap: 5px;
-			background-color: #999;
-			padding: 5px;
-		}
-
-		.btn-success {
-			background-color: #2F8D89;
-			border: #2F8D89;
-
-		}
-
-		.btn-success:hover {
-			background-color: #2F8D89;
-		}
-
-		.question_text {
-			width: 100%;
-			background-color: #2F8D89;
-			padding: 15px;
-			color: white;
-			border-radius: 5px;
-		}
-
-		.change-photo-btn {
-			background: #2F8D89;
-			width: 200px;
-			border-radius: 25px;
-			height: 40px;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			position: relative;
-		}
-
-		.change-photo-btn input {
-			position: absolute;
-			top: 50%;
-			left: 50%;
-			transform: translate(-50%, -50%);
-			width: 100%;
-			height: 100%;
-			opacity: 0;
-		}
-
-		.form-group {
-			padding: 10px;
-			margin: 10px 0;
-			background-color: #eee;
-		}
-
-		audio {
-			height: 42px;
-		}
-
-		.card-title,
-		.nav-link {
-			text-transform: capitalize;
-		}
-
-		.choice-number {
-			padding: 7px;
-			background-color: #666;
-			color: white;
-			margin-left: 10px;
-		}
-
-		.remove-choice-btn {
-			margin: 0 !important;
-			margin-right: 10px !important;
-			height: 100%;
-		}
-
-		.add-choice-btn {
-			width: 100%;
-		}
-	</style>
 	<%- include("../include/aside") %>
 		<%- include("../include/navePare") %>
 			<%- include("../include/alert") %>
@@ -118,6 +35,7 @@
 								<%- include("../include/notification") %>
 							</div>
 							<!-- /Page Header -->
+
 
 							<div class="row">
 								<div class="col-md-12">
@@ -208,6 +126,7 @@
 									</form>
 								</div>
 							</div>
+
 						</div>
 					</div>
 					<!-- /Page Wrapper -->
@@ -236,12 +155,11 @@
 				<script>
 
 					const sections = JSON.parse('<%- JSON.stringify(sections) %>');
-
 					const sectionsTabs = document.getElementById('sections-tabs');
 					const sectionsContent = document.getElementById('sections-content');
-					const editors = {}; // لتخزين CKEditor الخاص بكل سؤال
-					const audioFiles = {}; // لتخزين الملفات الصوتية
-					const fileUploads = {}; // لتخزين الملفات المرفوعة
+					const editors = {};
+					const audioFiles = {};
+					const fileUploads = {};
 					let questionCounts = {};
 
 					function showNotification({ type, title, text = '', html = '', timer = 5000, position = 'top-end' }) {
@@ -272,15 +190,31 @@
 							<div class="card mt-3">
 								<div class="card-body">
 									<h4 class="card-title">${section.section}</h4>
-									<div id="questions-container-${section._id}" class="questions-container">
-										<!-- Questions for this section will be added here -->
-									</div>
+									<div id="reading-section" class="tab-pane">
+										
+										<div class="card mt-3 ${section.section == "reading" || section.section == "writing" ? '' : 'd-none'}">
+											<div class="card-body">
+												<div class="form-group">
+													<label>Upload (Excel)</label>
+													<input type="file" id="uploadExcel" class="form-control uploadExcel" onchange="handleExcelUpload(event , '${section._id}')">
+													<div class="error-message text-danger"></div>
+												</div>
+												<div id="reading-questions-container" class="questions-container">
+													<!-- الأسئلة الخاصة بقسم Reading -->
+												</div>
+											</div>
+										</div>
+										<div id="questions-container-${section._id}" class="questions-container">
+											
+											<!-- Questions for this section will be added here -->
+											
+										</div>
 									<button type="button" class="btn btn-primary add-question-btn" data-section-id="${section._id}">Add A Question</button>
 								</div>
 							</div>
 						`;
-						sectionsContent.appendChild(content);
 
+						sectionsContent.appendChild(content);
 						questionCounts[section._id] = 0;
 					});
 
@@ -333,6 +267,7 @@
 							.catch(error => {
 								console.error(error);
 							});
+
 						attachEventListeners();
 					};
 
@@ -694,6 +629,221 @@
 
 
 
+				<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+				<script>
+
+					async function handleExcelUpload(event, sectionId) {
+						const file = event.target.files[0];
+						if (!file) {
+							showNotification({ type: 'error', title: 'Error', text: 'No file selected!' });
+							return;
+						}
+
+						const allowedExtensions = ['xls', 'xlsx'];
+						const extension = file.name.split('.').pop().toLowerCase();
+
+						if (!allowedExtensions.includes(extension)) {
+							showNotification({ type: 'error', title: 'Invalid File', text: 'Please upload a valid Excel file.' });
+							return;
+						}
+
+						const reader = new FileReader();
+						reader.onload = async (e) => {
+							const data = new Uint8Array(e.target.result);
+							const workbook = XLSX.read(data, { type: 'array' });
+							const sheetName = workbook.SheetNames[0];
+							const sheet = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
+
+							// Validate the content
+							if (!validateExcelData(sheet)) {
+								showNotification({ type: 'error', title: 'Invalid Data', text: 'Ensure the Excel file content matches the schema.' });
+								return;
+							}
+
+							// Loop through the questions and add them dynamically
+							sheet.forEach((row) => {
+								addQuestionToUI(sectionId, row);
+							});
+
+							showNotification({ type: 'success', title: 'Questions Added Successfully!' });
+						};
+
+						reader.readAsArrayBuffer(file);
+					}
+
+					// Helper function to add question data to the UI
+
+
+					function addQuestionToUI(sectionId, questionData) {
+						// Call the addQuestion function to create a new question block
+						addQuestion(sectionId);
+
+						// Get the latest question block
+						const questionIndex = questionCounts[sectionId];
+						const questionBlock = document.querySelector(`#questions-container-${sectionId} .question-block:last-child`);
+
+						// إزالة حقل السؤال إذا كان موجودًا
+						const existingQuestionTextContainer = questionBlock.querySelector('.question-text-container');
+						if (existingQuestionTextContainer) {
+							existingQuestionTextContainer.remove();
+						}
+
+						// إضافة حقل السؤال الجديد داخل card-body بعد question_text
+						const cardBody = questionBlock.querySelector('.card-body');
+						const questionTextLabel = cardBody.querySelector('.question_text');
+						if (cardBody && questionTextLabel) {
+							questionTextLabel.insertAdjacentHTML('afterend', `
+								<div class="form-group question-text-container">
+									<label>Question Text <span class="text-danger">*</span></label>
+									<textarea name="questions[${sectionId}][${questionIndex}][questionText]" id="question-editor-${sectionId}-${questionIndex}" class="form-control question-text" required>${questionData.questionText || ''}</textarea>
+								</div>
+							`);
+
+							// تهيئة CKEditor على الحقل الجديد
+							ClassicEditor.create(document.querySelector(`#question-editor-${sectionId}-${questionIndex}`))
+								.then(editor => {
+									editors[`question-editor-${sectionId}-${questionIndex}`] = editor;
+									editor.setData(questionData.questionText || ''); // تعيين النص الجديد
+								})
+								.catch(error => {
+									console.error(error);
+								});
+						} else {
+							console.error('Card body or question_text label not found for the question block.');
+						}
+
+						// تأكد من وجود حقل الدرجة وقم بإضافته
+						const questionDegreeElement = questionBlock.querySelector('.question-degree');
+						if (questionDegreeElement) {
+							questionDegreeElement.value = questionData.degree || 1;
+						} else {
+							console.error(`Missing 'question-degree' field for question ${questionIndex}`);
+						}
+
+						// تأكد من وجود حقل نوع السؤال وقم بإضافته
+						const questionTypeElement = questionBlock.querySelector('.question-type');
+						if (questionTypeElement) {
+							questionTypeElement.value = questionData.type || '';
+						} else {
+							console.error(`Missing 'question-type' field for question ${questionIndex}`);
+						}
+
+						// إنشاء الحقول الإضافية بناءً على نوع السؤال
+						const additionalFieldsContainer = questionBlock.querySelector('.additional-fields');
+
+						if (questionData.type === 'multipleChoice') {
+							// إنشاء الحقول الخاصة بالاختيارات
+							additionalFieldsContainer.innerHTML = `
+								<div class="form-group">
+									<label>Options <span class="text-danger">*</span></label>
+									<div id="choices-container-${sectionId}-${questionIndex}">
+										${questionData.choices?.map((choice, index) => `
+											<div class="choice-wrapper d-flex align-items-center mb-2">
+												<span class="choice-number mr-2">${index + 1}.</span>
+												<input type="text" name="questions[${sectionId}][${questionIndex}][choices][]" class="form-control" value="${choice}" placeholder="Option ${index + 1}" required>
+											</div>
+										`).join('') || ''}
+									</div>
+									<button type="button" class="btn btn-success btn-sm add-choice-btn" data-section-id="${sectionId}" data-index="${questionIndex}">Add Option</button>
+								</div>
+								<div class="form-group">
+									<label>The Right Answer <span class="text-danger">*</span></label>
+									<select name="questions[${sectionId}][${questionIndex}][correctAnswer]" class="form-control" required>
+										${questionData.choices?.map(choice => `
+											<option value="${choice}" ${choice === questionData.correctAnswer ? 'selected' : ''}>${choice}</option>
+										`).join('') || ''}
+									</select>
+								</div>
+							`;
+
+							// وظيفة إضافة اختيارات جديدة
+							const choicesContainer = questionBlock.querySelector(`#choices-container-${sectionId}-${questionIndex}`);
+							const correctAnswerSelect = questionBlock.querySelector(`select[name="questions[${sectionId}][${questionIndex}][correctAnswer]"]`);
+
+							questionBlock.querySelector('.add-choice-btn').addEventListener('click', () => {
+								const newIndex = choicesContainer.children.length + 1;
+
+								// إضافة اختيار جديد
+								choicesContainer.insertAdjacentHTML('beforeend', `
+									<div class="choice-wrapper d-flex align-items-center mb-2">
+										<span class="choice-number mr-2">${newIndex}.</span>
+										<input type="text" name="questions[${sectionId}][${questionIndex}][choices][]" class="form-control" placeholder="Option ${newIndex}" required>
+									</div>
+								`);
+
+								// إضافة الخيار الجديد إلى القائمة المنسدلة
+								correctAnswerSelect.insertAdjacentHTML('beforeend', `
+									<option value="">Option ${newIndex}</option>
+								`);
+							});
+						} else if (questionData.type === 'fillInTheBlank') {
+							// إنشاء حقل نصي للإجابة الصحيحة
+							additionalFieldsContainer.innerHTML = `
+								<div class="form-group">
+									<label>The Correct Answer <span class="text-danger">*</span></label>
+									<input type="text" name="questions[${sectionId}][${questionIndex}][correctAnswer]" class="form-control" value="${questionData.correctAnswer || ''}" required>
+								</div>
+							`;
+						} else if (questionData.type === 'trueFalse') {
+							// إنشاء قائمة منسدلة لـ true/false
+							additionalFieldsContainer.innerHTML = `
+							<div class="form-group">
+								<label>The Correct Answer <span class="text-danger">*</span></label>
+								<select name="questions[${sectionId}][${questionIndex}][correctAnswer]" class="form-control" required>
+									<option value="true" ${questionData.correctAnswer === 'true' ? 'selected' : ''}>True</option>
+									<option value="false" ${questionData.correctAnswer === 'false' ? 'selected' : ''}>False</option>
+								</select>
+							</div>
+						`;
+						}
+					}
+
+
+
+
+
+
+					function validateExcelData(data) {
+						for (const row of data) {
+							if (!row.questionText || !row.type || row.degree == null) {
+								return false;
+							}
+
+							// تنظيف النصوص لإزالة علامات الاقتباس المزدوجة أو المفردة
+							row.questionText = row.questionText.replace(/['"]+/g, '');
+							if (row.correctAnswer) {
+								row.correctAnswer = row.correctAnswer.replace(/['"]+/g, '');
+							}
+
+							if (row.choices && typeof row.choices === 'string') {
+								try {
+									row.choices = JSON.parse(row.choices.replace(/'/g, '"'));
+									row.choices = row.choices.map(choice => choice.replace(/['"]+/g, ''));
+								} catch (error) {
+									console.error(`Invalid format for choices in row: ${row.questionText}`);
+									return false;
+								}
+							}
+
+							if (row.type === 'multipleChoice') {
+								if (!row.choices || !Array.isArray(row.choices) || row.choices.length === 0 || !row.correctAnswer) {
+									return false;
+								}
+							} else if (row.type === 'fillInTheBlank') {
+								if (!row.correctAnswer) {
+									return false;
+								}
+							} else if (row.type === 'trueFalse') {
+								if (row.correctAnswer !== 'true' && row.correctAnswer !== 'false') {
+									return false;
+								}
+							} else {
+								return false;
+							}
+						}
+						return true;
+					}
+				</script>
 
 
 				<%- include("../include/footer_script") %>
