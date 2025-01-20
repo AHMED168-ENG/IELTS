@@ -328,7 +328,6 @@
 								const index = e.target.dataset.index;
 								const additionalFields = document.querySelector(`.additional-fields[data-section-id="${sectionId}"][data-block-index="${blockIndex2}"][data-index="${index}"]`);
 								if (!additionalFields) return
-								console.log(additionalFields)
 								additionalFields.innerHTML = '';
 								if (type === 'multipleChoice') {
 									additionalFields.innerHTML = `
@@ -387,7 +386,6 @@
 											<input type="text" name="sections[${sectionId}][blocks][${blockIndex2}][questions][${index}][correctAnswer]" class="form-control" required>
 										</div>
 									`;
-									console.log(sectionId, blockIndex2, index)
 									attachAudioListeners(sectionId, blockIndex2, index);
 								} else if (type === 'file') {
 									additionalFields.innerHTML = `

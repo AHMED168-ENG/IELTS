@@ -229,7 +229,7 @@
 										</div>
 									`;
 										attachEventListeners(blockIndex2);
-										// attachChoiceEvent(blockIndex2)
+										attachChoiceEvent(blockIndex2)
 									} else if (type === 'trueFalse') {
 										additionalFields.innerHTML = `
 										<div class="form-group">
@@ -257,16 +257,24 @@
 												<audio controls class="mt-2 d-none"></audio>
 											</div>
 										</div>
+										<div class="form-group">
+											<label>The Right Answer <span class="text-danger">*</span></label>
+											<input type="text" name="sections[${sectionId}][blocks][${blockIndex2}][questions][${index}][correctAnswer]" class="form-control" required>
+										</div>
 									`;
-										attachAudioListeners(sectionId, index);
+										attachAudioListeners(sectionId, blockIndex2, index);
 									} else if (type === 'file') {
 										additionalFields.innerHTML = `
 										<div class="form-group">
 											<label>Upload File <span class="text-danger">*</span></label>
 											<input type="file" name="sections[${sectionId}][blocks][${blockIndex2}][questions][${index}][file]" class="form-control file-upload" data-section-id="${sectionId}" data-index="${index}" required>
 										</div>
+										<div class="form-group">
+											<label>The Right Answer <span class="text-danger">*</span></label>
+											<input type="text" name="sections[${sectionId}][blocks][${blockIndex2}][questions][${index}][correctAnswer]" class="form-control" required>
+										</div>
 									`;
-										attachFileListeners(sectionId, index);
+										attachFileListeners(sectionId, blockIndex2, index);
 									}
 								}
 							});
@@ -300,14 +308,11 @@
 
 
 						document.querySelectorAll('.add-choice-btn').forEach(button => {
-							console.log(document.querySelectorAll('.add-choice-btn'))
-							console.log("button")
-							console.log(button)
 							button.addEventListener('click', (e) => {
 								const sectionId = e.target.getAttribute('data-section-id');
 								const index = e.target.getAttribute('data-index');
 								const choicesContainer = document.getElementById(`choices-container-${sectionId}-${index}`);
-
+								console.log(`choices-container-${sectionId}-${index}`)
 								const choiceTemplate = `
 									<div class="choice-wrapper d-flex align-items-center mb-2">
 										<span class="choice-number mr-2">${choicesContainer.children.length + 1}.</span>
@@ -346,7 +351,9 @@
 					}
 
 					const populateQuestionFields = (sectionId, index, question = null, blockIndex2) => {
-						const additionalFields = document.querySelector(`.additional-fields[data-section-id="${sectionId}"][data-index="${index}"]`);
+
+						const additionalFields = document.querySelector(`.additional-fields[data-section-id="${sectionId}"][data-block-index="${blockIndex2}"][data-index="${index}"]`);
+
 
 						if (question?.type === 'multipleChoice') {
 							additionalFields.innerHTML = `
@@ -422,7 +429,6 @@
 
 					const addQuestion = (sectionId, question, blockId) => {
 						const blockIndex2 = blockId;
-
 						questionCounts[sectionId][blockIndex2]++;
 						const questionIndex = questionCounts[sectionId][blockIndex2];
 						if (questionIndex) {
@@ -467,7 +473,7 @@
 								});
 							populateQuestionFields(sectionId, questionIndex, question, blockIndex2);
 							attachEventListeners(blockIndex2);
-							attachChoiceEvent(blockIndex2)
+
 						}
 					};
 
@@ -565,7 +571,7 @@
 					};
 
 
-					const attachAudioListeners = (sectionId, index) => {
+					const attachAudioListeners = (sectionId, blockIndex2, index) => {
 						const recordBtn = document.querySelector(`.record-audio-btn[data-section-id="${sectionId}"][data-index="${index}"]`);
 						const parent = recordBtn.closest('.audio-controls');
 						const audioElement = parent.querySelector('audio');
@@ -602,7 +608,7 @@
 										}
 
 										const data = await response.json();
-										audioFiles[`questions[${sectionId}][${index}][file]`] = data.fileName;
+										audioFiles[`sections[${sectionId}][blocks][${blockIndex2}][questions][${index}][file]`] = data.fileName;
 										recordingIndicator.classList.add('d-none');
 										recordBtn.innerHTML = '<i class="fa fa-microphone"></i> Registration';
 									} catch (error) {
@@ -624,7 +630,7 @@
 						});
 					};
 
-					const attachFileListeners = (sectionId, index) => {
+					const attachFileListeners = (sectionId, blockIndex2, index) => {
 						const fileInput = document.querySelector(`.file-upload[data-section-id="${sectionId}"][data-index="${index}"]`);
 
 						fileInput.addEventListener('change', async (event) => {
@@ -646,7 +652,7 @@
 									}
 
 									const data = await response.json();
-									fileUploads[`questions[${sectionId}][${index}][file]`] = data.fileName;
+									fileUploads[`sections[${sectionId}][blocks][${blockIndex2}][questions][${index}][file]`] = data.fileName;
 									alert('File uploaded successfully!');
 								} catch (error) {
 									console.error('Upload failed:', error);
@@ -809,6 +815,9 @@
 					createSectionsTabs();
 					populateExamInfo();
 					attachEventListeners();
+					// attachChoiceEvent()
+
+
 				</script>
 
 				<%- include("../include/footer_script") %>
