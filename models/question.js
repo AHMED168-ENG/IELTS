@@ -12,12 +12,17 @@ const questionSchema = new Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Sections',
   },
+  block: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Block',
+    required: true,
+  },
   exam: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Exam',
   },
   order: { type: Number },
-  degree : { type: Number , default : 1 },
+  degree: { type: Number, default: 1 },
   choices: [{ type: String }],
   correctAnswer: { type: String },
   file: { type: String },

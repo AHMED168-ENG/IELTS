@@ -1,8 +1,8 @@
 const Joi = require('joi');
 
-
+// Schema for questions
 const questionSchema = Joi.object({
-    questionText: Joi.string()
+    text: Joi.string()
         .required()
         .label('Question Text')
         .messages({
@@ -11,10 +11,10 @@ const questionSchema = Joi.object({
         }),
     degree: Joi.number()
         .required()
-        .label('degree')
+        .label('Degree')
         .messages({
-            'number.base': '"degree" must be a valid number .',
-            'any.required': '"degree" is required.'
+            'number.base': '"Degree" must be a valid number.',
+            'any.required': '"Degree" is required.'
         }),
     type: Joi.string()
         .valid('multipleChoice', 'trueFalse', 'fillInTheBlank', 'file', 'audio')
@@ -41,7 +41,6 @@ const questionSchema = Joi.object({
         is: 'multipleChoice',
         then: Joi.string()
             .required()
-            .label('Correct Answer')
             .custom((value, helpers) => {
                 const { choices } = helpers.state.ancestors[0];
                 if (!choices || !choices.includes(value)) {
@@ -49,6 +48,7 @@ const questionSchema = Joi.object({
                 }
                 return value;
             })
+            .label('Correct Answer')
             .messages({
                 'any.custom': '"Correct Answer" must be one of the choices.',
                 'any.required': '"Correct Answer" is required for multiple-choice questions.'
@@ -93,19 +93,39 @@ const questionSchema = Joi.object({
                 'string.empty': '"File" cannot be empty.',
                 'any.required': '"File" is required for file or audio questions.'
             }),
-        otherwise: Joi.forbidden() // يمنع وجود الحقل إذا لم يكن النوع 'file' أو 'audio'
+        otherwise: Joi.forbidden()
     })
 });
 
-// Schema for sections containing questions
+// Schema for blocks containing questions
+const blockSchema = Joi.object({
+    description: Joi.string()
+        .required()
+        .label('Block Description')
+        .messages({
+            'string.empty': '"Block Description" cannot be empty.',
+            'any.required': '"Block Description" is required.'
+        }),
+    questions: Joi.array()
+        .items(questionSchema)
+        .min(1)
+        .label('Questions')
+        .messages({
+            'array.base': '"Questions" must be an array.',
+            'array.min': 'Each block must have at least one question.'
+        })
+});
+
+// Schema for sections containing blocks
 const sectionSchema = Joi.object({
-    sectionId: Joi.string().required().messages({
-        'any.required': 'Section ID is required.'
-    }),
-    questions: Joi.array().items(questionSchema).required().messages({
-        'array.base': 'Questions must be an array.',
-        'any.required': 'Questions are required for each section.'
-    })
+    blocks: Joi.array()
+        .items(blockSchema)
+        .min(1)
+        .label('Blocks')
+        .messages({
+            'array.base': '"Blocks" must be an array.',
+            'array.min': 'Each section must have at least one block.'
+        })
 });
 
 // Schema for the exam
@@ -124,8 +144,6 @@ const examSchema = Joi.object({
             'boolean.base': '"Shuffle" must be a valid boolean (true or false).',
             'any.required': '"Shuffle" is required.'
         }),
-
-
     examType: Joi.string()
         .valid('academic', 'general training')
         .required()
@@ -134,28 +152,17 @@ const examSchema = Joi.object({
             'any.only': '"Exam Type" must be either "academic" or "general training".',
             'any.required': '"Exam Type" is required.'
         }),
-    questions: Joi.object()
+    sections: Joi.object()
         .pattern(
-            Joi.string(), // مفتاح القسم عبارة عن نص ديناميكي
-            Joi.array()
-                .items(questionSchema)
-                .min(1)
-                .label('Section Questions')
-                .messages({
-                    'array.base': '"Section Questions" must be an array.',
-                    'array.min': 'Each section must have at least one question.'
-                })
+            Joi.string(), // Section IDs as keys
+            sectionSchema
         )
-        .min(4) // على الأقل أربعة أقسام
-        .required()
-        .label('Questions')
+        .min(4) // At least 4 sections
+        .label('Sections')
         .messages({
-            'object.base': '"Questions" must be an object with sections.',
-            'object.min': '"Exam" must have at least four sections.',
-            'any.required': '"Questions" are required.'
+            'object.base': '"Sections" must be an object with section IDs as keys.',
+            'object.min': '"Exam" must have at least four sections.'
         })
 });
-
-
 
 module.exports = examSchema;

@@ -28,6 +28,10 @@ var activeUser = {};
 
 /* ------------- set seting -------------------*/
 app.use(express.urlencoded({ extended: true }));
+const qs = require('qs');
+
+app.use(express.urlencoded({ extended: true })); // Middleware لمعالجة الـ URL-encoded
+
 app.use(express.json());
 app.set("views", path.join(__dirname, "view"));
 app.set("view engine", "ejs");

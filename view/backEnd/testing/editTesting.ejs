@@ -152,14 +152,14 @@
 				<script>
 
 					const sections = JSON.parse('<%- JSON.stringify(sections) %>');
-					const examData = JSON.parse('<%- JSON.stringify(Testing) %>'); // بيانات الامتحان والأسئلة بالكامل
-					console.log(examData)
+					const examData = JSON.parse('<%- JSON.stringify(Testing) %>');
 					const sectionsTabs = document.getElementById('sections-tabs');
 					const sectionsContent = document.getElementById('sections-content');
 					const editors = {}; // لتخزين CKEditor الخاص بكل سؤال
 					const audioFiles = {}; // لتخزين الملفات الصوتية
 					const fileUploads = {}; // لتخزين الملفات المرفوعة
 					let questionCounts = {};
+					let blockCounts = {};
 
 					function showNotification({ type, title, text = '', html = '', timer = 5000, position = 'top-end' }) {
 						Swal.fire({
@@ -190,7 +190,7 @@
 						}
 					};
 
-					const attachEventListeners = () => {
+					const attachEventListeners = (blockIndex2) => {
 						document.querySelectorAll('.remove-question-btn').forEach((btn) => {
 							btn.addEventListener('click', (e) => {
 								e.target.closest('.question-block').remove();
@@ -198,54 +198,57 @@
 						});
 						document.querySelectorAll('.question-type').forEach(select => {
 							select.addEventListener('change', (e) => {
+
 								const type = e.target.value;
 								const sectionId = e.target.dataset.sectionId;
 								const index = e.target.dataset.index;
-								const additionalFields = document.querySelector(`.additional-fields[data-section-id="${sectionId}"][data-index="${index}"]`);
-								additionalFields.innerHTML = '';
+								const questionIndex = questionCounts[sectionId][blockIndex2];
+								const additionalFields = document.querySelector(`.additional-fields[data-section-id="${sectionId}"][data-block-index="${blockIndex2}"][data-index="${index}"]`);
 
-								if (type === 'multipleChoice') {
-									additionalFields.innerHTML = `
+								if (additionalFields) {
+									additionalFields.innerHTML = '';
+									if (type === 'multipleChoice') {
+										additionalFields.innerHTML = `
 										<div class="form-group">
 											<label>Options <span class="text-danger">*</span></label>
 											<div id="choices-container-${sectionId}-${index}">
 												<div class="choice-wrapper d-flex align-items-center mb-2">
 													<span class="choice-number mr-2">1.</span>
-													<input type="text" name="questions[${sectionId}][${index}][choices][]" class="form-control" placeholder="First Option" required>
+													<input type="text" name="sections[${sectionId}][blocks][${blockIndex2}][questions][${index}][choices][]" class="form-control" placeholder="First Option" required>
 												</div>
 												<div class="choice-wrapper d-flex align-items-center mb-2">
 													<span class="choice-number mr-2">2.</span>
-													<input type="text" name="questions[${sectionId}][${index}][choices][]" class="form-control" placeholder="Second Option" required>
+													<input type="text" name="sections[${sectionId}][blocks][${blockIndex2}][questions][${index}][choices][]" class="form-control" placeholder="Second Option" required>
 												</div>
 											</div>
 											<button type="button" class="btn btn-success btn-sm add-choice-btn" data-section-id="${sectionId}" data-index="${index}">Add Option</button>
 										</div>
 										<div class="form-group">
 											<label>Correct Answer <span class="text-danger">*</span></label>
-											<select name="questions[${sectionId}][${index}][correctAnswer]" class="form-control" required></select>
+											<select name="sections[${sectionId}][blocks][${blockIndex2}][questions][${index}][correctAnswer]" class="form-control" required></select>
 										</div>
 									`;
-									attachEventListeners();
-								} else if (type === 'trueFalse') {
-									additionalFields.innerHTML = `
+										attachEventListeners(blockIndex2);
+										// attachChoiceEvent(blockIndex2)
+									} else if (type === 'trueFalse') {
+										additionalFields.innerHTML = `
 										<div class="form-group">
 											<label>Correct Answer <span class="text-danger">*</span></label>
-											<select name="questions[${sectionId}][${index}][correctAnswer]" class="form-control" required>
+											<select name="sections[${sectionId}][blocks][${blockIndex2}][questions][${index}][correctAnswer]" class="form-control" required>
 												<option value="true">True</option>
 												<option value="false">False</option>
 											</select>
 										</div>
 									`;
-								} else if (type === 'fillInTheBlank') {
-									additionalFields.innerHTML = `
+									} else if (type === 'fillInTheBlank') {
+										additionalFields.innerHTML = `
 										<div class="form-group">
 											<label>Answer <span class="text-danger">*</span></label>
-											<input type="text" name="questions[${sectionId}][${index}][correctAnswer]" class="form-control" required>
+											<input type="text" name="sections[${sectionId}][blocks][${blockIndex2}][questions][${index}][correctAnswer]" class="form-control" required>
 										</div>
 									`;
-								} else if (type === 'audio') {
-
-									additionalFields.innerHTML = `
+									} else if (type === 'audio') {
+										additionalFields.innerHTML = `
 										<div class="form-group">
 											<label>Audio Recording<span class="text-danger">*</span></label>
 											<div class="audio-controls">
@@ -255,30 +258,34 @@
 											</div>
 										</div>
 									`;
-									attachAudioListeners(sectionId, index);
-								} else if (type === 'file') {
-									additionalFields.innerHTML = `
+										attachAudioListeners(sectionId, index);
+									} else if (type === 'file') {
+										additionalFields.innerHTML = `
 										<div class="form-group">
 											<label>Upload File <span class="text-danger">*</span></label>
-											<input type="file" name="questions[${sectionId}][${index}][file]" class="form-control file-upload" data-section-id="${sectionId}" data-index="${index}" required>
+											<input type="file" name="sections[${sectionId}][blocks][${blockIndex2}][questions][${index}][file]" class="form-control file-upload" data-section-id="${sectionId}" data-index="${index}" required>
 										</div>
 									`;
-									attachFileListeners(sectionId, index);
+										attachFileListeners(sectionId, index);
+									}
 								}
 							});
 						});
 					};
-
-					const attachChoiceEvent = () => {
-
-						document.querySelectorAll('.remove-question-btn').forEach(button => {
-							button.addEventListener('click', (e) => {
-								e.target.closest('.question-block').remove();
-							});
+					document.querySelectorAll('.remove-question-btn').forEach(button => {
+						button.addEventListener('click', (e) => {
+							e.target.closest('.question-block').remove();
 						});
-
+					});
+					document.querySelectorAll('.remove-block-btn').forEach(button => {
+						button.addEventListener('click', (e) => {
+							e.target.closest('.block-card').remove();
+						});
+					});
+					const attachChoiceEvent = (blockIndex2) => {
 						const updateCorrectAnswerOptions = (sectionId, index) => {
-							const correctAnswerSelect = document.querySelector(`select[name="questions[${sectionId}][${index}][correctAnswer]"]`);
+							const correctAnswerSelect = document.querySelector(`select[name="sections[${sectionId}][blocks][${blockIndex2}][questions][${index}][correctAnswer]"]`);
+							console.log(`choices-container-${sectionId}-${index}`)
 							const choicesContainer = document.getElementById(`choices-container-${sectionId}-${index}`);
 							const choices = choicesContainer.querySelectorAll('input[type="text"]');
 							correctAnswerSelect.innerHTML = ''; // Clear old options
@@ -290,7 +297,12 @@
 								correctAnswerSelect.appendChild(option);
 							});
 						};
+
+
 						document.querySelectorAll('.add-choice-btn').forEach(button => {
+							console.log(document.querySelectorAll('.add-choice-btn'))
+							console.log("button")
+							console.log(button)
 							button.addEventListener('click', (e) => {
 								const sectionId = e.target.getAttribute('data-section-id');
 								const index = e.target.getAttribute('data-index');
@@ -299,7 +311,7 @@
 								const choiceTemplate = `
 									<div class="choice-wrapper d-flex align-items-center mb-2">
 										<span class="choice-number mr-2">${choicesContainer.children.length + 1}.</span>
-										<input type="text" name="questions[${sectionId}][${index}][choices][]" class="form-control" required>
+										<input type="text" name="sections[${sectionId}][blocks][${blockIndex2}][questions][${index}][choices][]" class="form-control" required>
 										<button type="button" class="btn btn-danger btn-sm ml-2 remove-choice-btn">X</button>
 									</div>
 								`;
@@ -333,18 +345,18 @@
 						}, { once: true });
 					}
 
-					const populateQuestionFields = (sectionId, index, question) => {
+					const populateQuestionFields = (sectionId, index, question = null, blockIndex2) => {
 						const additionalFields = document.querySelector(`.additional-fields[data-section-id="${sectionId}"][data-index="${index}"]`);
 
-						if (question.type === 'multipleChoice') {
+						if (question?.type === 'multipleChoice') {
 							additionalFields.innerHTML = `
 								<div class="form-group">
 									<label>Options <span class="text-danger">*</span></label>
 									<div id="choices-container-${sectionId}-${index}">
-										${question.choices.map((choice, i) => `
+										${question?.choices.map((choice, i) => `
 											<div class="choice-wrapper d-flex align-items-center mb-2">
 												<span class="choice-number mr-2">${i + 1}.</span>
-												<input type="text" name="questions[${sectionId}][${index}][choices][]" class="form-control" value="${choice}" required>
+												<input type="text" name="sections[${sectionId}][blocks][${blockIndex2}][questions][${index}][choices][]" class="form-control" value="${choice}" required>
 											</div>
 										`).join('')}
 									</div>
@@ -352,120 +364,171 @@
 								</div>
 								<div class="form-group">
 									<label>Correct Answer <span class="text-danger">*</span></label>
-									<select name="questions[${sectionId}][${index}][correctAnswer]" class="form-control" required>
-										${question.choices.map(choice => `<option value="${choice}" ${question.correctAnswer === choice ? 'selected' : ''}>${choice}</option>`).join('')}
+									<select name="sections[${sectionId}][blocks][${blockIndex2}][questions][${index}][correctAnswer]" class="form-control" required>
+										${question?.choices.map(choice => `<option value="${choice}" ${question?.correctAnswer === choice ? 'selected' : ''}>${choice}</option>`).join('')}
 									</select>
 								</div>
 							`;
-						} else if (question.type === 'trueFalse') {
+						} else if (question?.type === 'trueFalse') {
 							additionalFields.innerHTML = `
 								<div class="form-group">
 									<label>Correct Answer <span class="text-danger">*</span></label>
-									<select name="questions[${sectionId}][${index}][correctAnswer]" class="form-control" required>
-										<option value="true" ${question.correctAnswer === 'true' ? 'selected' : ''}>True</option>
-										<option value="false" ${question.correctAnswer === 'false' ? 'selected' : ''}>false</option>
+									<select name="sections[${sectionId}][blocks][${blockIndex2}][questions][${index}][correctAnswer]" class="form-control" required>
+										<option value="true" ${question?.correctAnswer === 'true' ? 'selected' : ''}>True</option>
+										<option value="false" ${question?.correctAnswer === 'false' ? 'selected' : ''}>false</option>
 									</select>
 								</div>
 							`;
-						} else if (question.type === 'fillInTheBlank') {
+						} else if (question?.type === 'fillInTheBlank') {
 							additionalFields.innerHTML = `
 								<div class="form-group">
 									<label>Answer <span class="text-danger">*</span></label>
-									<input type="text" name="questions[${sectionId}][${index}][correctAnswer]" class="form-control" value="${question.correctAnswer}" required>
+									<input type="text" name="sections[${sectionId}][blocks][${blockIndex2}][questions][${index}][correctAnswer]" class="form-control" value="${question?.correctAnswer}" required>
 								</div>
 							`;
-						} else if (question.type === 'audio') {
+						} else if (question?.type === 'audio') {
 							additionalFields.innerHTML = `
 								<div class="form-group">
 									<label>Audio Recording <span class="text-danger">*</span></label>
 									<div class="audio-controls">
-										<audio controls src="http://localhost:5000/backEnd/assets/sound/question/${question.file}"></audio>
-										<input type="hidden" name="questions[${sectionId}][${index}][file]" class="form-control file-upload" value="${question.file}" required>
+										<audio controls src="http://localhost:5000/backEnd/assets/sound/question/${question?.file}"></audio>
+										<input type="hidden" name="sections[${sectionId}][blocks][${blockIndex2}][questions][${index}][file]" class="form-control file-upload" value="${question?.file}" required>
 										<span class="recording-indicator text-danger d-none">Registering...</span>
 									</div>
 								</div>
 								<div class="form-group">
 									<label>Answer <span class="text-danger">*</span></label>
-									<input type="text" name="questions[${sectionId}][${index}][correctAnswer]" class="form-control" value="${question.correctAnswer}" required>
+									<input type="text" name="sections[${sectionId}][blocks][${blockIndex2}][questions][${index}][correctAnswer]" class="form-control" value="${question?.correctAnswer}" required>
 								</div>
 							`;
-						} else if (question.type === 'file') {
+						} else if (question?.type === 'file') {
 							additionalFields.innerHTML = `
 								<div class="form-group">
 									<label>Upload File <span class="text-danger">*</span></label>
-									<input type="hidden" name="questions[${sectionId}][${index}][file]" class="form-control file-upload" value="${question.file}" required>
-									<audio controls src="http://localhost:5000/backEnd/assets/sound/question/${question.file}"></audio>
-									<a href="http://localhost:5000/backEnd/assets/sound/question/${question.file}" target="_blank">View File</a>
+									<input type="hidden" name="sections[${sectionId}][blocks][${blockIndex2}][questions][${index}][file]" class="form-control file-upload" value="${question?.file}" required>
+									<audio controls src="http://localhost:5000/backEnd/assets/sound/question/${question?.file}"></audio>
+									<a href="http://localhost:5000/backEnd/assets/sound/question/${question?.file}" target="_blank">View File</a>
 								</div>
 								<div class="form-group">
 									<label>Answer <span class="text-danger">*</span></label>
-									<input type="text" name="questions[${sectionId}][${index}][correctAnswer]" class="form-control" value="${question.correctAnswer}" required>
+									<input type="text" name="sections[${sectionId}][blocks][${blockIndex2}][questions][${index}][correctAnswer]" class="form-control" value="${question?.correctAnswer}" required>
 								</div>
 
 							`;
 						}
+
+						console.log("tow")
 					};
 
-					const addQuestion = (sectionId, question = null) => {
-						questionCounts[sectionId]++;
-						const questionIndex = questionCounts[sectionId];
-						const questionsContainer = document.getElementById(`questions-container-${sectionId}`);
+					const addQuestion = (sectionId, question, blockId) => {
+						const blockIndex2 = blockId;
 
-						const questionTemplate = `
-							<div class="question-block card mt-3">
-								<div class="card-body">
-									<h5 class="question_text">Question ${questionIndex}</h5>
-									<div class="form-group question-text-container">
-										<label>Question text <span class="text-danger">*</span></label>
-										<textarea name="questions[${sectionId}][${questionIndex}][questionText]" id="question-editor-${sectionId}-${questionIndex}" class="form-control question-text">${question ? question.questionText : ''}</textarea>
+						questionCounts[sectionId][blockIndex2]++;
+						const questionIndex = questionCounts[sectionId][blockIndex2];
+						if (questionIndex) {
+							const questionsContainer = document.getElementById(`questions-container-${sectionId}-${blockIndex2}`);
+							const questionTemplate = `
+					            <div class="question question-block card mt-3">
+									<div class="card-body">
+										<h6 class="question-title question_text">Question ${questionIndex}</h6>
+										<div class="form-group">
+											<label>Question Text</label>
+											<textarea name="sections[${sectionId}][blocks][${blockIndex2}][questions][${questionIndex}][text]" id="question-text-${sectionId}-${blockIndex2}-${questionIndex}" class="form-control">${question ? question.questionText : ''}</textarea>
+										</div>
+										<div class="form-group">
+											<label>Question Degree</label>
+											<input type="number" value="${question ? question.degree : ''}" name="sections[${sectionId}][blocks][${blockIndex2}][questions][${questionIndex}][degree]" class="form-control" />
+										</div>
+										<div class="form-group">
+											<label>Question Type</label>
+											<select name="sections[${sectionId}][blocks][${blockIndex2}][questions][${questionIndex}][type]" class="form-control question-type" data-index="${questionIndex}" data-section-id="${sectionId}">
+												<option value=""></option>
+												<option value="multipleChoice" ${question?.type === 'multipleChoice' ? 'selected' : ''}>Multiple Choice</option>
+												<option value="trueFalse" ${question?.type === 'trueFalse' ? 'selected' : ''}>true or false</option>
+												<option value="fillInTheBlank" ${question?.type === 'fillInTheBlank' ? 'selected' : ''}>Fill in the blank </option>
+												<option value="audio" ${question?.type === 'audio' ? 'selected' : ''}>voice </option>
+												<option value="file" ${question?.type === 'file' ? 'selected' : ''}>file </option>
+											</select>
+										</div>
+										<div class="additional-fields" data-section-id="${sectionId}" data-block-index="${blockIndex2}" data-index="${questionIndex}"></div>
+										<button type="button" class="btn btn-danger remove-question-btn">Delete Question</button>
 									</div>
-									<div class="form-group ">
-										<label>Question Degree<span class="text-danger">*</span></label>
-										<input min="0" name="questions[${sectionId}][${questionIndex}][degree]" value="${question ? question.degree : ''}" type="number" class="form-control question-degree"></input>
-									</div>
-									<div class="form-group">
-										<label>Question Type <span class="text-danger">*</span></label>
-										<select name="questions[${sectionId}][${questionIndex}][type]" class="form-control question-type" data-section-id="${sectionId}" data-index="${questionIndex}">
-											<option value=""></option>
-											<option value="multipleChoice" ${question?.type === 'multipleChoice' ? 'selected' : ''}>Multiple Choice</option>
-											<option value="trueFalse" ${question?.type === 'trueFalse' ? 'selected' : ''}>true or false</option>
-											<option value="fillInTheBlank" ${question?.type === 'fillInTheBlank' ? 'selected' : ''}>Fill in the blank </option>
-											<option value="audio" ${question?.type === 'audio' ? 'selected' : ''}>voice </option>
-											<option value="file" ${question?.type === 'file' ? 'selected' : ''}>file </option>
-										</select>
-									</div>
-									<div class="additional-fields" data-section-id="${sectionId}" data-index="${questionIndex}"></div>
-									<button type="button" class="btn btn-danger remove-question-btn">Delete Question</button>
 								</div>
-							</div>
-						`;
+					        `;
+							questionsContainer.insertAdjacentHTML('beforeend', questionTemplate);
 
-						questionsContainer.insertAdjacentHTML('beforeend', questionTemplate);
-						ClassicEditor.create(document.querySelector(`#question-editor-${sectionId}-${questionIndex}`))
+							// Initialize CKEditor for question text
+							ClassicEditor.create(document.querySelector(`#question-text-${sectionId}-${blockIndex2}-${questionIndex}`))
+								.then(editor => {
+									editors[`question-text-${sectionId}-${blockIndex2}-${questionIndex}`] = editor;
+								})
+								.catch(error => {
+									console.error(error);
+								});
+							populateQuestionFields(sectionId, questionIndex, question, blockIndex2);
+							attachEventListeners(blockIndex2);
+							attachChoiceEvent(blockIndex2)
+						}
+					};
+
+					const addBlock = (sectionId, description) => {
+						blockCounts[sectionId]++;
+						const blockIndex = blockCounts[sectionId];
+						questionCounts[sectionId][blockIndex] = 0;
+						const blocksContainer = document.getElementById(`blocks-container-${sectionId}`);
+						const addBlockButton = blocksContainer.previousElementSibling; // تحديد زر "Add Question Block"
+
+						const blockTemplate = `
+					           <div class="block block-card card mt-3">
+									<div class="card-header bg-primary text-white">
+										<h5>Block ${blockIndex}</h5>
+									</div>
+									<div class="card-body">
+										<div class="form-group">
+											<label>Description</label>
+											<textarea name="sections[${sectionId}][blocks][${blockIndex}][description]" id="block-description-${sectionId}-${blockIndex}" class="form-control">${description ? description : ''}</textarea>
+										</div>
+										<div id="questions-container-${sectionId}-${blockIndex}" class="questions-container mt-3">
+											<!-- Questions for this block will be added here -->
+										</div>
+										<button type="button" class="btn w-100 btn-primary add-question-btn mt-2" data-section-id="${sectionId}" data-block-index="${blockIndex}">Add Question</button>
+										<button type="button" class="btn w-100 btn-danger remove-block-btn mt-2" data-section-id="${sectionId}" data-block-index="${blockIndex}">Delete Block</button>
+									</div>
+								</div>
+								
+								
+					        `;
+						blocksContainer.insertAdjacentHTML('beforeend', blockTemplate);
+
+						// Initialize CKEditor for description
+						ClassicEditor.create(document.querySelector(`#block-description-${sectionId}-${blockIndex}`))
 							.then(editor => {
-								editors[`question-editor-${sectionId}-${questionIndex}`] = editor;
+								editors[`block-description-${sectionId}-${blockIndex}`] = editor;
 							})
 							.catch(error => {
 								console.error(error);
 							});
-
-						if (question) {
-							populateQuestionFields(sectionId, questionIndex, question);
-						}
-
-						attachEventListeners();
+						document.querySelectorAll('.remove-block-btn').forEach(button => {
+							button.addEventListener('click', (e) => {
+								e.target.closest('.block-card').remove();
+							});
+						});
 					};
 
 					document.addEventListener('click', (event) => {
-						if (event.target.classList.contains('add-question-btn')) {
+						if (event.target.classList.contains('add-block-btn')) {
 							const sectionId = event.target.getAttribute('data-section-id');
-							addQuestion(sectionId);
+							addBlock(sectionId);
+						} else if (event.target.classList.contains('add-question-btn')) {
+							const sectionId = event.target.getAttribute('data-section-id');
+							const blockId = event.target.getAttribute('data-block-index');
+							addQuestion(sectionId, null, blockId);
 						}
 					});
-
 					const createSectionsTabs = () => {
-						sections.forEach((section, index) => {
-							// إنشاء علامة تبويب للسكشن
+						examData.sections.forEach((section, index) => {
+							blockCounts[section._id] = 0;
+							questionCounts[section._id] = {};
 							const tab = document.createElement('li');
 							tab.className = 'nav-item';
 							tab.innerHTML = `
@@ -479,28 +542,28 @@
 							content.className = `tab-pane ${index === 0 ? 'active' : ''}`;
 							content.id = `section-${section._id}`;
 							content.innerHTML = `
-								<div class="card mt-3">
-									<div class="card-body">
-										<h4 class="card-title">${section.section || 'Unnamed Section'}</h4>
-										<div id="questions-container-${section._id}" class="questions-container"></div>
-										<button type="button" class="btn btn-primary add-question-btn" data-section-id="${section._id}">
-											Add A Question
-										</button>
-									</div>
-								</div>`;
+								<div>
+					                <div id="blocks-container-${section._id}" class="blocks-container mt-4">
+					                    <!-- Blocks will be dynamically added here -->
+					                </div>
+									 <button type="button" class="btn btn-success add-block-btn"  data-section-id="${section._id}">Add Question Block</button>
+					            </div>
+`;
 							sectionsContent.appendChild(content);
 
 							// تهيئة عداد الأسئلة
-							questionCounts[section._id] = 0;
-
 							// إضافة الأسئلة الموجودة إلى السكشن
-							const sectionQuestions = examData.questions.filter(q => q.section === section._id);
-							sectionQuestions.forEach(question => {
-								addQuestion(section._id, question);
+
+							const blocks = examData.sections.find(q => q._id === section._id).blocks;
+							blocks.forEach((block, index) => {
+								addBlock(section._id, block.description)
+								block.questions.forEach(question => {
+									addQuestion(section._id, question, index + 1);
+								});
 							});
 						});
 					};
-					createSectionsTabs();
+
 
 					const attachAudioListeners = (sectionId, index) => {
 						const recordBtn = document.querySelector(`.record-audio-btn[data-section-id="${sectionId}"][data-index="${index}"]`);
@@ -612,7 +675,6 @@
 							const editorContent = editors[editorId].getData();
 							const textarea = document.querySelector(`#${editorId}`);
 							if (textarea) formData.set(textarea?.name, editorContent);
-
 						});
 
 						// Add audio files to FormData
@@ -626,44 +688,85 @@
 						});
 
 						// Convert FormData to JSON
-						for (let [key, value] of formData.entries()) {
-							if (key.startsWith('questions')) {
-								const keys = key.split(/\[|\]/).filter(k => k);
-								const sectionId = keys[1];
-								const questionIndex = parseInt(keys[2], 10);
-								const field = keys[3];
+						formData.forEach((value, key) => {
+							if (key.startsWith("sections")) {
+								const keys = key.split(/\[|\]/).filter(k => k); // تقسيم المفتاح
+								let current = payload;
 
-								if (!payload.questions) payload.questions = {};
-								if (!payload.questions[sectionId]) payload.questions[sectionId] = [];
-								if (!payload.questions[sectionId][questionIndex - 1]) payload.questions[sectionId][questionIndex - 1] = {};
-
-								if (field === 'choices') {
-									if (!Array.isArray(payload.questions[sectionId][questionIndex - 1][field])) {
-										payload.questions[sectionId][questionIndex - 1][field] = [];
+								keys.forEach((k, i) => {
+									if (!current[k]) {
+										current[k] = isNaN(keys[i + 1]) ? {} : [];
 									}
-									payload.questions[sectionId][questionIndex - 1][field].push(value);
-								} else {
-									payload.questions[sectionId][questionIndex - 1][field] = value;
-								}
-							} else {
-								payload[key] = value;
-							}
-						}
 
-						try {
+									if (i === keys.length - 1) {
+										// معالجة الحقول التي تحتوي على [] مثل choices[]
+										if (k === "choices") {
+											if (!Array.isArray(current[k])) {
+												current[k] = [];
+											}
+											current[k].push(value);
+										} else {
+											current[k] = value;
+										}
+									}
 
-							if (payload && payload.questions && Object.keys(payload.questions).length) {
-								Object.keys(payload.questions).forEach(sectionId => {
-									payload.questions[sectionId] = payload.questions[sectionId].filter(question => question !== null);
+									current = current[k];
 								});
+							} else if (key === "examName") {
+								payload.examName = value; // إضافة اسم الامتحان
+							} else if (key === "examType") {
+								payload.examType = value; // إضافة نوع الامتحان
+							} else if (key === "shuffle") {
+								payload.shuffle = value === "true"; // إضافة خاصية التبديل العشوائي
 							}
+						});
 
-							const response = await fetch(`http://localhost:5000/dashboard/EditTesting/${examData._id}`, {
+						// Function to clean payload
+						const cleanPayload = (obj) => {
+							if (Array.isArray(obj)) {
+								return obj.filter(item => item !== null && item !== undefined).map(cleanPayload);
+							} else if (typeof obj === 'object' && obj !== null) {
+								const newObj = {};
+								Object.keys(obj).forEach(key => {
+									const value = cleanPayload(obj[key]);
+									if (value !== null && value !== undefined) {
+										newObj[key] = value;
+									}
+								});
+								return newObj;
+							}
+							return obj;
+						};
+
+						// Clean the payload
+						const cleanedPayload = cleanPayload(payload);
+
+						// Ensure choices is always an array
+						const ensureChoicesArray = (data) => {
+							if (Array.isArray(data)) {
+								return data.map(item => ensureChoicesArray(item));
+							} else if (typeof data === 'object' && data !== null) {
+								Object.keys(data).forEach(key => {
+									if (key === 'choices' && typeof data[key] !== 'object') {
+										data[key] = Array.isArray(data[key]) ? data[key] : [];
+									} else {
+										data[key] = ensureChoicesArray(data[key]);
+									}
+								});
+								return data;
+							}
+							return data;
+						};
+
+						const finalPayload = ensureChoicesArray(cleanedPayload);
+						console.log(examData)
+						try {
+							const response = await fetch(`http://localhost:5000/dashboard/EditTesting/${examData.examId}`, {
 								method: 'POST',
 								headers: {
 									'Content-Type': 'application/json',
 								},
-								body: JSON.stringify(payload),
+								body: JSON.stringify(finalPayload),
 							});
 
 							if (!response.ok) {
@@ -671,14 +774,14 @@
 
 								if (errorData.errors && errorData.errors.length > 0) {
 									Swal.fire({
-										title: 'Verification error',
+										title: 'Validation error',
 										html: errorData.errors.map(err => `<p>${err}</p>`).join(''),
 										icon: 'error',
 										confirmButtonText: 'Good',
 									});
 								} else {
 									Swal.fire({
-										title: 'unexpected error',
+										title: 'Unexpected error',
 										text: 'An unexpected error occurred. Try again.',
 										icon: 'error',
 										confirmButtonText: 'Good',
@@ -691,25 +794,21 @@
 									icon: 'success',
 									confirmButtonText: 'Good',
 								}).then(() => window.location.reload());
-
-
 							}
 						} catch (error) {
 							console.error('Network error:', error);
 							Swal.fire({
 								title: 'Network error',
-								text: 'An error occurred while connecting to the server. Please check your network connection.',
+								text: 'An error occurred while connecting to the server. Please make sure you are connected to the network.',
 								icon: 'error',
 								confirmButtonText: 'Good',
 							});
 						}
-					})
+					});
 
-
-
+					createSectionsTabs();
 					populateExamInfo();
 					attachEventListeners();
-					attachChoiceEvent()
 				</script>
 
 				<%- include("../include/footer_script") %>

@@ -5,6 +5,7 @@ const {
 const Testing = require("../../models/testing");
 const Section = require("../../models/sections");
 const Question = require("../../models/question");
+const Block = require("../../models/block");
 
 const { validationResult } = require("express-validator");
 const { default: mongoose } = require("mongoose");
@@ -42,28 +43,70 @@ const addTestingController = async (req, res, next) => {
 
 const addTestingControllerPost = async (req, res) => {
     try {
-        const { examName, examType, questions, shuffle } = req.body;
+        const { examName, examType, shuffle, sections } = req.body;
 
-        const newExam = await Testing.create({ name: examName, type: examType, shuffle: shuffle == "true" });
-        if (questions && typeof questions === 'object' && Object.keys(questions).length > 0) {
-            const sectionPromises = Object.entries(questions).map(async ([sectionId, sectionQuestions]) => {
-                const questionPromises = sectionQuestions.map(async (questionData, index) => {
-                    return await Question.create({
-                        ...questionData,
-                        section: sectionId,
-                        exam: newExam._id,
-                        order: index
-                    });
+        if (!examName || !examType || !sections) {
+            return res.status(400).json({
+                success: false,
+                message: "Missing required fields: examName, examType, or sections.",
+            });
+        }
+
+        // إنشاء الامتحان
+        const newExam = await Testing.create({
+            name: examName,
+            type: examType,
+            shuffle: shuffle === true,
+        });
+        console.log(newExam)
+        console.log(sectionPromises)
+
+        // معالجة الأقسام (sections)
+        const sectionPromises = Object.entries(sections).map(async ([sectionId, sectionData]) => {
+            if (!sectionData.blocks || !Array.isArray(sectionData.blocks)) {
+                throw new Error(`Invalid or missing blocks for section: ${sectionId}`);
+            }
+
+            // معالجة الكتل (blocks) داخل القسم
+            const blockPromises = sectionData.blocks.map(async (blockData, blockIndex) => {
+                const newBlock = await Block.create({
+                    description: blockData.description,
+                    section: sectionId,
+                    order: blockIndex,
+                    exam: newExam._id,
                 });
-                return await Promise.all(questionPromises);
+
+                // معالجة الأسئلة داخل الـ block
+                if (blockData.questions && Array.isArray(blockData.questions)) {
+                    const questionPromises = blockData.questions.map(async (questionData, questionIndex) => {
+                        return await Question.create({
+                            questionText: questionData.text,
+                            type: questionData.type,
+                            degree: questionData.degree,
+                            choices: questionData.choices || [],
+                            correctAnswer: questionData.correctAnswer,
+                            file: questionData.file || null,
+                            section: sectionId,
+                            exam: newExam._id,
+                            block: newBlock._id,
+                            order: questionIndex,
+                        });
+                    });
+
+                    await Promise.all(questionPromises);
+                }
+
+                return newBlock;
             });
 
-            await Promise.all(sectionPromises);
-        }
+            return await Promise.all(blockPromises);
+        });
+
+        await Promise.all(sectionPromises);
 
         res.status(201).json({
             success: true,
-            message: "Exam and questions created successfully.",
+            message: "Exam, blocks, and questions created successfully.",
             examId: newExam._id,
         });
     } catch (error) {
@@ -83,37 +126,93 @@ const EditTestingController = async (req, res, next) => {
         const examData = await Testing.aggregate([
             {
                 $match: {
-                    _id: new mongoose.Types.ObjectId(examId),
+                    _id: new mongoose.Types.ObjectId(examId), // تحديد الامتحان المطلوب
+                },
+            },
+            {
+                $lookup: {
+                    from: "blocks",
+                    localField: "_id",
+                    foreignField: "exam",
+                    as: "blocks",
+                },
+            },
+            {
+                $unwind: {
+                    path: "$blocks",
+                    preserveNullAndEmptyArrays: true,
+                },
+            },
+            {
+                $lookup: {
+                    from: "sections",
+                    localField: "blocks.section",
+                    foreignField: "_id",
+                    as: "blocks.sectionData",
+                },
+            },
+            {
+                $unwind: {
+                    path: "$blocks.sectionData",
+                    preserveNullAndEmptyArrays: true,
                 },
             },
             {
                 $lookup: {
                     from: "questions",
-                    localField: "_id",
-                    foreignField: "exam",
-                    as: "questions",
-                    pipeline: [
-                        {
-                            $sort: {
-                                order: 1
-                            }
-                        }
-                    ]
+                    localField: "blocks._id",
+                    foreignField: "block",
+                    as: "blocks.questions",
                 },
             },
             {
-                $project: {
-                    _id: 1,
-                    name: 1,
-                    type: 1,
-                    shuffle: 1,
-                    active: 1,
-                    createdAt: 1,
-                    updatedAt: 1,
-                    questions: 1,
+                $group: {
+                    _id: "$blocks.sectionData._id",
+                    sectionName: { $first: "$blocks.sectionData.section" },
+                    blocks: {
+                        $push: {
+                            _id: "$blocks._id",
+                            description: "$blocks.description",
+                            order: "$blocks.order",
+                            questions: "$blocks.questions",
+                        },
+                    },
+                    examName: { $first: "$name" },
+                    examId: { $first: "$_id" },
+                    examType: { $first: "$type" },
+                    examShuffle: { $first: "$shuffle" },
+                    examActive: { $first: "$active" },
+                    examCreatedAt: { $first: "$createdAt" },
+                    examUpdatedAt: { $first: "$updatedAt" },
+                },
+            },
+            {
+                $sort: {
+                    sectionName: 1,
+                },
+            },
+            {
+                $group: {
+                    _id: "$examName",
+                    name: { $first: "$examName" },
+                    examId: { $first: "$examId" },
+                    type: { $first: "$examType" },
+                    shuffle: { $first: "$examShuffle" },
+                    active: { $first: "$examActive" },
+                    createdAt: { $first: "$examCreatedAt" },
+                    updatedAt: { $first: "$examUpdatedAt" },
+                    sections: {
+                        $push: {
+                            _id: "$_id",
+                            section: "$sectionName",
+                            order: "$sectionOrder",
+                            blocks: "$blocks",
+                        },
+                    },
                 },
             },
         ]);
+
 
         res.render("backEnd/testing/editTesting", {
             title: "edit Testing",
@@ -129,13 +228,75 @@ const EditTestingController = async (req, res, next) => {
     }
 };
 
+// const EditTestingControllerPost = async (req, res) => {
+//     try {
+//         const { examName, examType, questions, shuffle } = req.body;
+//         const examId = req.params.id;
+
+//         const existingExam = await Testing.findById(examId);
+
+//         if (!existingExam) {
+//             return res.status(404).json({
+//                 success: false,
+//                 message: "Exam not found.",
+//             });
+//         }
+
+//         const oldQuestions = await Question.find({ exam: examId }).select('_id file');
+//         const deleteFilesPromises = oldQuestions.map(question => {
+//             // if (question.file && question.file.length > 0) removeFiles(req, question.file);
+//         });
+//         await Promise.all(deleteFilesPromises);
+
+//         const deleteQuestionsPromises = oldQuestions.map(question => Question.findByIdAndDelete(question._id));
+//         await Promise.all(deleteQuestionsPromises);
+
+//         await Testing.updateOne({ _id: examId }, {
+//             name: examName,
+//             type: examType,
+//             shuffle: shuffle === "true",
+//         });
+
+//         if (questions && typeof questions === 'object') {
+//             const sectionPromises = Object.entries(questions).map(([sectionId, sectionQuestions]) =>
+//                 Question.insertMany(sectionQuestions.map((questionData, index) => ({
+//                     ...questionData,
+//                     section: sectionId,
+//                     exam: examId,
+//                     order: index
+//                 })))
+//             );
+//             await Promise.all(sectionPromises);
+//         }
+
+//         res.status(200).json({
+//             success: true,
+//             message: "Exam and questions updated successfully.",
+//         });
+//     } catch (error) {
+//         console.log(error)
+//         res.status(500).json({
+//             success: false,
+//             message: error.message,
+//         });
+//     }
+// };
+
 const EditTestingControllerPost = async (req, res) => {
     try {
-        const { examName, examType, questions, shuffle } = req.body;
+        const { examName, examType, shuffle, sections } = req.body;
         const examId = req.params.id;
-
+        console.log(shuffle)
+        // التحقق من المدخلات
+        if (!examName || !examType || !sections) {
+            return res.status(400).json({
+                success: false,
+                message: "Missing required fields: examId, examName, examType, or sections.",
+            });
+        }
+        console.log(examId)
+        // التحقق من وجود الامتحان
         const existingExam = await Testing.findById(examId);
-
         if (!existingExam) {
             return res.status(404).json({
                 success: false,
@@ -143,42 +304,75 @@ const EditTestingControllerPost = async (req, res) => {
             });
         }
 
-        const oldQuestions = await Question.find({ exam: examId }).select('_id file');
-        const deleteFilesPromises = oldQuestions.map(question => {
-            // if (question.file && question.file.length > 0) removeFiles(req, question.file);
-        });
-        await Promise.all(deleteFilesPromises);
+        // خطوة 1: حذف الكتل والأسئلة المرتبطة بالامتحان
+        console.log("Deleting existing blocks and questions...");
+        await Promise.all([
+            Block.deleteMany({ exam: examId }),
+            Question.deleteMany({ exam: examId }),
+        ]);
 
-        const deleteQuestionsPromises = oldQuestions.map(question => Question.findByIdAndDelete(question._id));
-        await Promise.all(deleteQuestionsPromises);
+        // خطوة 2: تحديث بيانات الامتحان
+        console.log("Updating exam data...");
+        existingExam.name = examName;
+        existingExam.type = examType;
+        existingExam.shuffle = shuffle == true;
+        console.log(existingExam)
+        await existingExam.save();
 
-        await Testing.updateOne({ _id: examId }, {
-            name: examName,
-            type: examType,
-            shuffle: shuffle === "true",
-        });
+        const sectionPromises = Object.entries(sections).map(
+            async ([sectionId, sectionData]) => {
+                // التحقق من الكتل
+                if (!sectionData.blocks || !Array.isArray(sectionData.blocks)) {
+                    throw new Error(`Invalid or missing blocks for section: ${sectionId}`);
+                }
 
-        if (questions && typeof questions === 'object') {
-            const sectionPromises = Object.entries(questions).map(([sectionId, sectionQuestions]) =>
-                Question.insertMany(sectionQuestions.map((questionData, index) => ({
-                    ...questionData,
-                    section: sectionId,
-                    exam: examId,
-                    order: index
-                })))
-            );
-            await Promise.all(sectionPromises);
-        }
+                const blockPromises = sectionData.blocks.map(
+                    async (blockData, blockIndex) => {
+                        const newBlock = await Block.create({
+                            description: blockData.description,
+                            section: sectionId,
+                            order: blockIndex,
+                            exam: examId,
+                        });
 
+                        if (blockData.questions && Array.isArray(blockData.questions)) {
+                            const questionPromises = blockData.questions.map(
+                                async (questionData, questionIndex) => {
+                                    return Question.create({
+                                        questionText: questionData.text,
+                                        type: questionData.type,
+                                        degree: questionData.degree,
+                                        choices: questionData.choices || [],
+                                        correctAnswer: questionData.correctAnswer,
+                                        file: questionData.file || null,
+                                        section: sectionId,
+                                        exam: examId,
+                                        block: newBlock._id,
+                                        order: questionIndex,
+                                    });
+                                }
+                            );
+                            await Promise.all(questionPromises);
+                        }
+                        return newBlock;
+                    }
+                );
+
+                return await Promise.all(blockPromises);
+            }
+        );
+        await Promise.all(sectionPromises);
         res.status(200).json({
             success: true,
-            message: "Exam and questions updated successfully.",
+            message: "Exam, blocks, and questions updated successfully.",
+            examId: examId,
         });
     } catch (error) {
-        console.log(error)
+        console.error("Error updating exam:", error);
+
         res.status(500).json({
             success: false,
-            message: error.message,
+            message: "An error occurred while updating the exam.",
         });
     }
 };
@@ -217,6 +411,7 @@ const deleteTesting = async (req, res, next) => {
         await Promise.all([
             Promise.all(fileDeletionPromises),
             Question.deleteMany({ exam: req.params.id }),
+            Block.deleteMany({ exam: req.params.id }),
             Testing.findByIdAndDelete(req.params.id),
         ]);
 

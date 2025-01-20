@@ -2,7 +2,7 @@
 const isAuthonticate = async (req, res, next) => {
   var User = req.cookies.User;
   console.log(User)
-  if (User && !User.isAdmin) {
+  if ((User && !User.isAdmin) || !User) {
     res.redirect("/signIn");
   } else {
     next();

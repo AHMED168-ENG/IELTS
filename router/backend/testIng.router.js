@@ -30,8 +30,8 @@ router.post(
 );
 
 router.get(
-    "/EditTesting/:id", 
-    isAuthonticate, 
+    "/EditTesting/:id",
+    isAuthonticate,
     EditTestingController
 );
 
@@ -42,8 +42,8 @@ router.post(
     EditTestingControllerPost
 );
 router.post(
-    "/activeTesting/:id", 
-    isAuthonticate, 
+    "/activeTesting/:id",
+    isAuthonticate,
     activeTesting
 );
 router.delete("/deleteTesting/:id", isAuthonticate, deleteTesting);
@@ -61,7 +61,7 @@ const storage = multer.diskStorage({
                 'audio/mpeg': '.mp3',
                 'audio/wav': '.wav'
             };
-            fileExtension = mimeToExt[file.mimetype] || '.ogg'; 
+            fileExtension = mimeToExt[file.mimetype] || '.ogg';
         }
 
         cb(null, uniqueSuffix + fileExtension);
@@ -82,22 +82,22 @@ const upload = multer({
     fileFilter: fileFilter
 });
 
-const uploadSingleFile = upload.single('file'); 
+const uploadSingleFile = upload.single('file');
 router.post('/upload-test-file', (req, res) => {
     userAuthenticateApi,
-    uploadSingleFile(req, res, (err) => {
-        if (err) {
-            return res.status(400).json({ message: err.message });
-        }
-        if (!req.file) {
-            return res.status(400).json({ message: 'No file uploaded' });
-        }
-        const fileName = req.file.filename;
-        res.status(200).json({
-            message: 'File uploaded successfully',
-            fileName: fileName
+        uploadSingleFile(req, res, (err) => {
+            if (err) {
+                return res.status(400).json({ message: err.message });
+            }
+            if (!req.file) {
+                return res.status(400).json({ message: 'No file uploaded' });
+            }
+            const fileName = req.file.filename;
+            res.status(200).json({
+                message: 'File uploaded successfully',
+                fileName: fileName
+            });
         });
-    });
 });
 
 
